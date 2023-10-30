@@ -1,0 +1,74 @@
+.description-person {
+    border: 2px solid #01aec5;
+    border-radius: 5px;
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
+.loading {
+    width: 100px;
+    height: 100px;
+    background-image: url('../assets/icon_loading.png');
+    animation: rotate 1.5s infinite linear;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.page {
+    padding: 5px;
+    margin-left: 5px;
+    margin-top: 10px;
+    border: 2px solid #01aec5;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.page:hover {
+    background-color: #01aec5;
+    color: #fff;
+}
+
+.page_current {
+    font-weight: bold;
+    border: 3px solid #71fc00;
+}
+
+.result-container {
+    display: flex;
+    justify-content: center;
+}
+
+.input {
+    margin-right: 40px;
+    border-color: #01aec5;
+    border-radius: 5px;
+}
+
+.button-error {
+    position: absolute;
+    right: 40px;
+    top: 40px;
+}
+
+.page-container {
+    margin-top: 30px;
+}
+
+.result {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.error-container {
+    color: red;
+    font-size: 50px;
+    font-weight: bold;
+}
