@@ -16,7 +16,7 @@ class App extends React.Component<object, MyComponentState> {
     console.log(props);
     super(props);
     this.state = {
-      inputValue: localStorage.getItem('inputValue') as string,
+      inputValue: localStorage.getItem('inputValue') || '',
       data: [],
       loading: false,
       arrAllPages: [],
@@ -31,7 +31,7 @@ class App extends React.Component<object, MyComponentState> {
       this.setState({
         inputValue: localStorage.getItem('inputValue') as string,
       });
-    }
+    } 
     this.setState({ loading: true });
     getPerson(this.state.inputValue).then((data) => {
       if (data) {
