@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { getPerson } from './API/getPerson';
 import './App.css';
 import './style/style.css';
@@ -7,109 +7,103 @@ import ButtonPage from './components/ButtonPage';
 import ItemPerson from './components/ItemPerson';
 import InputNew from './components/InputNew';
 import ButtonSearch from './components/ButtonSearch';
-import { IPerson, MyComponentState } from './types/types';
 import ErrorButton from './components/ButtonError';
 import ErrorBoundary from './components/ErrorBoundary';
+import { IPerson } from './types/types';
 
-class App extends React.Component<object, MyComponentState> {
-  constructor(props: object) {
-    console.log(props);
-    super(props);
-    this.state = {
-      inputValue: localStorage.getItem('inputValue') || '',
-      data: [],
-      loading: false,
-      arrAllPages: [],
-      page: 1,
-      error: false,
-    };
-  }
 
-  componentDidMount() {
+function App() {
+  // const [inputValue, setInputValue] = useState(localStorage.getItem('inputValue') || '');
+  const [inputValue, setInputValue] = useState('');
+  const [data, setData] = useState<IPerson[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [arrAllPages, setArrAllPages] = useState<number[]>([]);
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
     const storedValue = localStorage.getItem('inputValue');
     if (storedValue !== null) {
-      this.setState({
-        inputValue: localStorage.getItem('inputValue') as string,
-      });
-    } 
-    this.setState({ loading: true });
-    getPerson(this.state.inputValue).then((data) => {
+      setInputValue(storedValue);
+    }
+
+    setLoading(true);
+
+    getPerson(inputValue).then((data) => {
       if (data) {
-        this.setState({ data: data.results });
-        this.setState({ arrAllPages: getAllPages(data.count) });
+        setData(data.results);
+        setArrAllPages(getAllPages(data.count));
       }
-      this.setState({ loading: false });
+
+      setLoading(false);
     });
-  }
+  }, []);
 
-  updateLoading = (newLoading: boolean) => {
-    this.setState({ loading: newLoading });
+
+  const updateLoading = (newLoading: boolean) => {
+    setLoading(newLoading);
   };
 
-  updateData = (newData: IPerson[]) => {
-    this.setState({ data: newData });
+  const updateData = (newData: IPerson[]) => {
+    setData(newData);
   };
 
-  updateArrAllPages = (newArrAllPages: number[]) => {
-    this.setState({ arrAllPages: newArrAllPages });
+  const updateArrAllPages = (newArrAllPages: number[]) => {
+    setArrAllPages(newArrAllPages);
   };
 
-  updatePage = (newPage: number) => {
-    this.setState({ page: newPage });
+  const updatePage = (newPage: number) => {
+    setPage(newPage);
   };
 
-  updateInput = (newInput: string) => {
-    this.setState({ inputValue: newInput });
+  const updateInput = (newInput: string) => {
+    console.log(newInput);
+    setInputValue(newInput);
   };
 
-  updateError = (newEr: boolean) => {
-    this.setState({ error: newEr });
+  const updateError = (newEr: boolean) => {
+    setError(newEr);
   };
 
-  render() {
-    return (
-      <div>
-        <ErrorBoundary error={this.state.error}>
+  return (
+    <div>
+      <ErrorBoundary error={error}>
         <div>
-          <InputNew
-            input={this.state.inputValue}
-            updateInput={this.updateInput}
-          />
+          <InputNew input={inputValue} updateInput={updateInput} />
           <ButtonSearch
-            input={this.state.inputValue}
-            updateLoading={this.updateLoading}
-            updateData={this.updateData}
-            updateArrAllPages={this.updateArrAllPages}
-            updatePage={this.updatePage}
+            input={inputValue}
+            updateLoading={updateLoading}
+            updateData={updateData}
+            updateArrAllPages={updateArrAllPages}
+            updatePage={updatePage}
           />
-            <ErrorButton
-            updateError={this.updateError}/>
+          <ErrorButton updateError={updateError} />
         </div>
         <div className="result-container">
-          {this.state.loading ? (
+          {loading ? (
             <div className="loading"></div>
           ) : (
             <div>
               <p className="result">Results:</p>
-              <ItemPerson data={this.state.data} />
-              {this.state.arrAllPages.length > 1 ? (
+              <ItemPerson data={data} />
+              {arrAllPages.length > 1 ? (
                 <ButtonPage
-                  arrAllPages={this.state.arrAllPages}
-                  page={this.state.page}
-                  input={this.state.inputValue}
-                  updateLoading={this.updateLoading}
-                  updateData={this.updateData}
-                  updateArrAllPages={this.updateArrAllPages}
-                  updatePage={this.updatePage}
+                  arrAllPages={arrAllPages}
+                  page={page}
+                  input={inputValue}
+                  updateLoading={updateLoading}
+                  updateData={updateData}
+                  updateArrAllPages={updateArrAllPages}
+                  updatePage={updatePage}
                 />
               ) : null}
             </div>
           )}
         </div>
-        </ErrorBoundary>
-      </div>
-    );
-  }
+      </ErrorBoundary>
+    </div>
+  );
 }
 
 export default App;
+

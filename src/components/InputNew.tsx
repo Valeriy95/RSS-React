@@ -2,28 +2,23 @@ import React from 'react';
 import '../style/style.css';
 import { IInputNew } from '../types/types';
 
-class Input extends React.Component<IInputNew> {
-  constructor(props: IInputNew) {
-    super(props);
-  }
-
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+function Input (props: IInputNew)  {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    this.props.updateInput(newValue);
+    localStorage.setItem('inputValue', newValue);
+    props.updateInput(newValue);
   };
 
-  render() {
     return (
       <>
         <input
           type="text"
-          onChange={this.handleInputChange}
-          value={this.props.input}
+          onChange={handleInputChange}
+          value={props.input}
           className="input"
         />
       </>
     );
-  }
 }
 
 export default Input;

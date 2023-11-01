@@ -1,16 +1,14 @@
-import React from 'react';
 import { IErrorButton } from '../types/types';
 
-class ErrorButton extends React.Component<IErrorButton> {
-  constructor(props: IErrorButton) {
-    super(props);
-  }
+function ErrorButton (props: IErrorButton) {
 
-  render() {
-    return (
-      <button className='button-error' onClick={() => this.props.updateError(true)}>Ошибка</button>
-    );
-  }
+  const handleButtonClick = () => {
+    props.updateError(true);
+  };
+
+  return (
+    <button className='button-error' onClick={handleButtonClick}>Ошибка</button>
+  );
 }
 
 export default ErrorButton;
