@@ -3,8 +3,7 @@ import { changePage } from '../pagination/changePage';
 import '../style/style.css';
 import { IButtonPage } from '../types/types';
 
-function ButtonPage (props: IButtonPage) {
-
+function ButtonPage(props: IButtonPage) {
   const handlePageClick = (p: number) => {
     props.updateLoading(true);
     changePage(props.input, p).then((data) => {
@@ -28,8 +27,6 @@ function ButtonPage (props: IButtonPage) {
       ))}
     </div>
   );
-
 }
-
 
 export default ButtonPage;

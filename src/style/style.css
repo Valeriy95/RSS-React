@@ -26,14 +26,20 @@
     padding: 5px;
     margin-left: 5px;
     margin-top: 10px;
-    border: 2px solid #01aec5;
+    border: 2px solid #808080;
+    color: #808080;
     border-radius: 5px;
-    cursor: pointer;
 }
 
-.page:hover {
+.active-pagination {
+    color: #000;
+    border: 2px solid #01aec5;
+}
+
+.active-pagination:hover {
     background-color: #01aec5;
     color: #fff;
+    cursor: pointer;
 }
 
 .page_current {
@@ -43,6 +49,7 @@
 
 .result-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }
 
@@ -71,4 +78,21 @@
     color: red;
     font-size: 50px;
     font-weight: bold;
+}
+
+.pagination {
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+
+}
+
+.pagination p {
+    margin: 0;
+}
+
+.hidden {
+    display: none !important;
 }

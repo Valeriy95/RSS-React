@@ -3,22 +3,26 @@ import { getPerson } from './API/getPerson';
 import './App.css';
 import './style/style.css';
 import { getAllPages } from './pagination/getAllPages';
-import ButtonPage from './components/ButtonPage';
 import ItemPerson from './components/ItemPerson';
 import InputNew from './components/InputNew';
 import ButtonSearch from './components/ButtonSearch';
 import ErrorButton from './components/ButtonError';
 import ErrorBoundary from './components/ErrorBoundary';
-import { IPerson } from './types/types';
-
+import { DataPerson, IPerson } from './types/types';
+import { Routes, Route } from 'react-router-dom';
+import { ItemComponent } from './components/ItemComponent';
+import { ErrorComponent } from './components/ErrorComponent';
+import ButtonTest from './components/ButtonTest';
 
 function App() {
-  // const [inputValue, setInputValue] = useState(localStorage.getItem('inputValue') || '');
   const [inputValue, setInputValue] = useState('');
   const [data, setData] = useState<IPerson[]>([]);
   const [loading, setLoading] = useState(false);
   const [arrAllPages, setArrAllPages] = useState<number[]>([]);
   const [page, setPage] = useState(1);
+  const [offset, setOffset] = useState(0);
+  const [itemAllPages, setItemAllPages] = useState(10);
+  const [lastPage, setLastPage] = useState(130);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -29,7 +33,7 @@ function App() {
 
     setLoading(true);
 
-    getPerson(inputValue).then((data) => {
+    getPerson(inputValue, offset, itemAllPages).then((data) => {
       if (data) {
         setData(data.results);
         setArrAllPages(getAllPages(data.count));
@@ -39,13 +43,23 @@ function App() {
     });
   }, []);
 
-
   const updateLoading = (newLoading: boolean) => {
     setLoading(newLoading);
   };
 
-  const updateData = (newData: IPerson[]) => {
-    setData(newData);
+  const updateData = (newData: DataPerson) => {
+    // if (Array.isArray(newData)) {
+    //   // Вызываем `updateData` только с `IPerson[]`
+    //   updateData(newData);
+    // } else {
+    //   // Если `newData` не является массивом, выполните соответствующую обработку
+    // }
+    if (Array.isArray(newData)) {
+      setData(newData);
+    } else {
+      setData([newData]);
+    }
+    // setData(newData);
   };
 
   const updateArrAllPages = (newArrAllPages: number[]) => {
@@ -57,12 +71,23 @@ function App() {
   };
 
   const updateInput = (newInput: string) => {
-    console.log(newInput);
     setInputValue(newInput);
   };
 
   const updateError = (newEr: boolean) => {
     setError(newEr);
+  };
+
+  const updateItemAllPages = (item: number) => {
+    setItemAllPages(item);
+  };
+
+  const updateSetLastPage = (pages: number) => {
+    setLastPage(pages);
+  };
+
+  const updateSetOffset = (pages: number) => {
+    setOffset(pages);
   };
 
   return (
@@ -72,6 +97,7 @@ function App() {
           <InputNew input={inputValue} updateInput={updateInput} />
           <ButtonSearch
             input={inputValue}
+            itemAllPages={itemAllPages}
             updateLoading={updateLoading}
             updateData={updateData}
             updateArrAllPages={updateArrAllPages}
@@ -85,20 +111,53 @@ function App() {
           ) : (
             <div>
               <p className="result">Results:</p>
-              <ItemPerson data={data} />
-              {arrAllPages.length > 1 ? (
-                <ButtonPage
-                  arrAllPages={arrAllPages}
-                  page={page}
-                  input={inputValue}
-                  updateLoading={updateLoading}
-                  updateData={updateData}
-                  updateArrAllPages={updateArrAllPages}
-                  updatePage={updatePage}
-                />
-              ) : null}
+              <Routes>
+                <Route path="/" element={<ItemPerson data={data} />} />
+                {arrAllPages.map((page) => (
+                  <Route
+                    key={page}
+                    path={`/:${page}`}
+                    element={
+                      <ItemComponent
+                        num={page}
+                        data={data}
+                        arrAllPages={arrAllPages}
+                        page={page}
+                        input={inputValue}
+                        itemAllPages={itemAllPages}
+                        lastPage={lastPage}
+                        updateLoading={updateLoading}
+                        updateData={updateData}
+                        updateArrAllPages={updateArrAllPages}
+                        updatePage={updatePage}
+                        updateItemAllPages={updateItemAllPages}
+                        updateSetLastPage={updateSetLastPage}
+                        updateSetOffset={updateSetOffset}
+                      />
+                    }
+                  />
+                ))}
+                <Route path="error" element={<ErrorComponent />} />
+              </Routes>
             </div>
           )}
+          <div>
+            {arrAllPages.length > 1 ? (
+              <ButtonTest
+                arrAllPages={arrAllPages}
+                page={page}
+                input={inputValue}
+                itemAllPages={itemAllPages}
+                lastPage={lastPage}
+                updateLoading={updateLoading}
+                updateData={updateData}
+                updateArrAllPages={updateArrAllPages}
+                updatePage={updatePage}
+                updateItemAllPages={updateItemAllPages}
+                updateSetLastPage={updateSetLastPage}
+              />
+            ) : null}
+          </div>
         </div>
       </ErrorBoundary>
     </div>
@@ -106,4 +165,3 @@ function App() {
 }
 
 export default App;
-

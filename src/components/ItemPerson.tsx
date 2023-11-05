@@ -1,17 +1,23 @@
 import '../style/style.css';
-import { IItemPerson } from '../types/types';
+import { IItemPerson, IPerson } from '../types/types';
 
-function ItemPerson (props: IItemPerson) {
-
+function ItemPerson(props: IItemPerson) {
+  console.log(props.data);
   return (
     <>
-      {props.data.map((item, index) => (
-        <div className="description-person" key={index}>{`Name: ${item.name}; Height: ${item.height}; Mass: ${
-          item.mass
-        }; Hair rcolor: ${item.hair_color}; Eye color: ${
-          item.eye_color
-        }`}</div>
-      ))}
+      {Array.isArray(props.data) ? (
+        props.data.map((item, index) => (
+          <div
+            className="description-person"
+            key={index}
+          >{`Name: ${item.name};`}</div>
+        ))
+      ) : (
+        <div
+          className="description-person"
+          key={1}
+        >{`Name: ${props.data.name};`}</div>
+      )}
     </>
   );
 }
