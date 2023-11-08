@@ -1,7 +1,7 @@
 import '../style/style.css';
 import { getPerson } from '../API/getPerson';
 import { getAllPages } from '../pagination/getAllPages';
-import { IButtonSearch } from '../types/types';
+import { IButtonSearch, IPeople } from '../types/types';
 import { useNavigate } from 'react-router-dom';
 
 function ButtonSearch(props: IButtonSearch) {
@@ -11,9 +11,10 @@ function ButtonSearch(props: IButtonSearch) {
     localStorage.setItem('inputValue', props.input);
     getPerson(props.input, 0, props.itemAllPages).then((data) => {
       if (data) {
+        console.log(data);
         Array.isArray(data)
           ? props.updateData(data.results)
-          : props.updateData(data);
+          : props.updateData(data as IPeople);
         props.updateArrAllPages(getAllPages(data.count));
         props.updatePage(1);
         navigate('/');

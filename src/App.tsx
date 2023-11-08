@@ -3,28 +3,31 @@ import { getPerson } from './API/getPerson';
 import './App.css';
 import './style/style.css';
 import { getAllPages } from './pagination/getAllPages';
-import ItemPerson from './components/ItemPerson';
 import InputNew from './components/InputNew';
 import ButtonSearch from './components/ButtonSearch';
 import ErrorButton from './components/ButtonError';
 import ErrorBoundary from './components/ErrorBoundary';
-import { DataPerson, IPerson } from './types/types';
-import { Routes, Route } from 'react-router-dom';
+import { DataPerson, Pokemon } from './types/types';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ItemComponent } from './components/ItemComponent';
 import { ErrorComponent } from './components/ErrorComponent';
-import ButtonTest from './components/ButtonTest';
+import Description from './components/Description';
+import ButtonPagination from './components/ButtonPagination';
 
 function App() {
   const [inputValue, setInputValue] = useState('');
-  const [data, setData] = useState<IPerson[]>([]);
+  const [detailData, setDetailData] = useState<Pokemon>();
+  const [data, setData] = useState<DataPerson>([]);
   const [loading, setLoading] = useState(false);
   const [arrAllPages, setArrAllPages] = useState<number[]>([]);
   const [page, setPage] = useState(1);
-  const [offset, setOffset] = useState(0);
+  // const [offset, setOffset] = useState(0);
   const [itemAllPages, setItemAllPages] = useState(10);
   const [lastPage, setLastPage] = useState(130);
   const [error, setError] = useState(false);
 
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const storedValue = localStorage.getItem('inputValue');
     if (storedValue !== null) {
@@ -33,7 +36,7 @@ function App() {
 
     setLoading(true);
 
-    getPerson(inputValue, offset, itemAllPages).then((data) => {
+    getPerson(inputValue, 0, itemAllPages).then((data) => {
       if (data) {
         setData(data.results);
         setArrAllPages(getAllPages(data.count));
@@ -41,25 +44,22 @@ function App() {
 
       setLoading(false);
     });
-  }, []);
+
+    if (detailData) {
+      navigate(`${page}/details`);
+    }
+  }, [detailData]);
 
   const updateLoading = (newLoading: boolean) => {
     setLoading(newLoading);
   };
 
   const updateData = (newData: DataPerson) => {
-    // if (Array.isArray(newData)) {
-    //   // Вызываем `updateData` только с `IPerson[]`
-    //   updateData(newData);
-    // } else {
-    //   // Если `newData` не является массивом, выполните соответствующую обработку
-    // }
     if (Array.isArray(newData)) {
       setData(newData);
     } else {
-      setData([newData]);
+      setData(newData);
     }
-    // setData(newData);
   };
 
   const updateArrAllPages = (newArrAllPages: number[]) => {
@@ -86,9 +86,14 @@ function App() {
     setLastPage(pages);
   };
 
-  const updateSetOffset = (pages: number) => {
-    setOffset(pages);
+  // const updateSetOffset = (pages: number) => {
+  //   setOffset(pages);
+  // };
+
+  const updateSetDetailData = (data: Pokemon) => {
+    setDetailData(data);
   };
+
 
   return (
     <div>
@@ -111,39 +116,45 @@ function App() {
           ) : (
             <div>
               <p className="result">Results:</p>
+              <div className="routes-container">
               <Routes>
-                <Route path="/" element={<ItemPerson data={data} />} />
+                <Route path="/" element={<ItemComponent 
+                        data={data} 
+                        input={inputValue}
+                        itemAllPages={itemAllPages}
+                        lastPage={lastPage}
+                        updateData={updateData}
+                        updateArrAllPages={updateArrAllPages}
+                        updatePage={updatePage}
+                        updateSetDetailData={updateSetDetailData} />} />
                 {arrAllPages.map((page) => (
                   <Route
                     key={page}
                     path={`/:${page}`}
                     element={
                       <ItemComponent
-                        num={page}
                         data={data}
-                        arrAllPages={arrAllPages}
-                        page={page}
                         input={inputValue}
                         itemAllPages={itemAllPages}
                         lastPage={lastPage}
-                        updateLoading={updateLoading}
                         updateData={updateData}
                         updateArrAllPages={updateArrAllPages}
                         updatePage={updatePage}
-                        updateItemAllPages={updateItemAllPages}
-                        updateSetLastPage={updateSetLastPage}
-                        updateSetOffset={updateSetOffset}
+                        updateSetDetailData={updateSetDetailData}
                       />
                     }
-                  />
+                  >
+                    <Route path="details" element={<Description detailData={detailData}/>} />
+                  </Route>
                 ))}
                 <Route path="error" element={<ErrorComponent />} />
               </Routes>
+              </div>
             </div>
           )}
           <div>
             {arrAllPages.length > 1 ? (
-              <ButtonTest
+              <ButtonPagination
                 arrAllPages={arrAllPages}
                 page={page}
                 input={inputValue}

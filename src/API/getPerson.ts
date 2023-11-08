@@ -4,7 +4,7 @@ export async function getPerson(
   text: string,
   item: number,
   lim: number,
-): Promise<IPeople | undefined > {
+): Promise<IPeople | undefined> {
   const response: Response = await fetch(
     `https://pokeapi.co/api/v2/pokemon/${text}?limit=${lim}&offset=${item}`,
   );
