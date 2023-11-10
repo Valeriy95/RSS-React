@@ -377,6 +377,22 @@ interface ISprites {
   }
 }
 
-export interface IDescription {
-
+export interface IContext {
+  inputValue: string;
+  error: boolean;
+  updateInput: (newInput: string) => void;
+  itemAllPages: number;
+  updateLoading: (newLoading: boolean) => void;
+  updateData: (newData: DataPerson) => void;
+  updateArrAllPages: (newArrAllPages: number[]) => void;
+  updatePage: (newPage: number) => void;
+  updateError: (newEr: boolean) => void;
+  data: DataPerson;
+  lastPage: number;
+  updateSetDetailData: (data: Pokemon) => void;
+  detailData: Pokemon | undefined;
+  page: number;
+  updateItemAllPages: (newPage: number) => void;
+  updateSetLastPage: (newPage: number) => void;
+  arrAllPages: number[];
 }

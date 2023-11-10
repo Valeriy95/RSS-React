@@ -1,10 +1,14 @@
 import { getAllPages } from '../pagination/getAllPages';
 import '../style/style.css';
-import { IButtonPage } from '../types/types';
 import { getPerson } from '../API/getPerson';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { Context } from '../App';
 
-function ButtonPagination(props: IButtonPage) {
+function ButtonPagination() {
+
+  const {page, inputValue, itemAllPages, lastPage, updateLoading, updateData, updateArrAllPages, updatePage , updateItemAllPages, updateSetLastPage} = useContext(Context);
+
   const navigate = useNavigate();
 
   const decrementPage = (p: number) => {
@@ -13,7 +17,7 @@ function ButtonPagination(props: IButtonPage) {
       navigate(`/${p - 1}`);
     }
     if (p > 1) {
-      props.updatePage(p - 1);
+      updatePage(p - 1);
       addStylePagesNext();
       navigate(`/${p - 1}`);
     }
@@ -21,16 +25,16 @@ function ButtonPagination(props: IButtonPage) {
 
   const incrementPage = (p: number) => {
     console.log(p);
-    if (p === props.lastPage - 1) {
+    if (p === lastPage - 1) {
       removeStylePagesNext();
       navigate(`/${p + 1}`);
     }
-    if (p < props.lastPage) {
+    if (p < lastPage) {
       if (p === 1) {
         addStylePagesPrevious();
         navigate(`/${p + 1}`);
       }
-      props.updatePage(p + 1);
+      updatePage(p + 1);
       navigate(`/${p + 1}`);
     }
   };
@@ -42,16 +46,17 @@ function ButtonPagination(props: IButtonPage) {
     const totalCount = 1292;
     const lastPage = Math.ceil(totalCount / itemsPages);
 
-    props.updatePage(lastPage);
+    updatePage(lastPage);
     navigate(`/${lastPage}`);
   };
 
   const getStartPage = (itemPages: number) => {
-    props.updatePage(itemPages);
+    updatePage(itemPages);
     addStylePagesNext();
     removeStylePagesPrevious();
     navigate('/1');
   };
+
 
   function navigateToStart() {
     navigate('/1');
@@ -59,25 +64,26 @@ function ButtonPagination(props: IButtonPage) {
 
   function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedValue: number = Number(event.target.value);
-    props.updateItemAllPages(selectedValue);
+    updateItemAllPages(selectedValue);
     const totalCount = 1292;
     const updateLastPage = Math.ceil(totalCount / selectedValue);
-    props.updateSetLastPage(updateLastPage);
+    updateSetLastPage(updateLastPage);
     removeStylePagesPrevious();
     addStylePagesNext();
 
-    props.updateLoading(true);
+    updateLoading(true);
 
-    getPerson(props.input, 0, selectedValue).then((data) => {
-      props.updatePage(1);
+    getPerson(inputValue, 0, selectedValue).then((data) => {
+      updatePage(1);
       if (data) {
-        props.updateData(data.results);
-        props.updateArrAllPages(getAllPages(data.count));
+        updateData(data.results);
+        updateArrAllPages(getAllPages(data.count));
       }
-      props.updateLoading(false);
+      updateLoading(false);
     });
     navigateToStart();
   }
+
 
   const btnLastPage = document.querySelector('.last-page') as HTMLButtonElement;
   const btnNextPage = document.querySelector('.next-page') as HTMLButtonElement;
@@ -123,20 +129,20 @@ function ButtonPagination(props: IButtonPage) {
       </div>
       <div
         className="page btn-previous"
-        onClick={() => decrementPage(props.page)}
+        onClick={() => decrementPage(page)}
       >
         {'<'}
       </div>
-      <div className="page">{`${props.page}`}</div>
+      <div className="page">{`${page}`}</div>
       <button
         className="page active-pagination next-page"
-        onClick={() => incrementPage(props.page)}
+        onClick={() => incrementPage(page)}
       >
         {'>'}
       </button>
       <button
         className="page active-pagination last-page"
-        onClick={() => getLastPage(props.itemAllPages)}
+        onClick={() => getLastPage(itemAllPages)}
       >
         {'>>'}
       </button>

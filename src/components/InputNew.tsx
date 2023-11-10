@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import '../style/style.css';
-import { IInputNew } from '../types/types';
+import { Context } from '../App';
 
-function Input(props: IInputNew) {
+function Input() {
+
+  const {inputValue, updateInput} = useContext(Context);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     localStorage.setItem('inputValue', newValue);
-    props.updateInput(newValue);
+    updateInput(newValue);
   };
 
   return (
@@ -14,7 +17,7 @@ function Input(props: IInputNew) {
       <input
         type="text"
         onChange={handleInputChange}
-        value={props.input}
+        value={inputValue}
         className="input"
       />
     </>

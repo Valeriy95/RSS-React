@@ -1,8 +1,12 @@
-import { IErrorButton } from '../types/types';
+import { useContext } from 'react';
+import { Context } from '../App';
 
-function ErrorButton(props: IErrorButton) {
+function ErrorButton() {
+
+  const {updateError} = useContext(Context);
+
   const handleButtonClick = () => {
-    props.updateError(true);
+    updateError(true);
   };
 
   return (

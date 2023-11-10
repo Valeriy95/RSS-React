@@ -1,27 +1,33 @@
 import '../style/style.css';
 import { getPerson } from '../API/getPerson';
 import { getAllPages } from '../pagination/getAllPages';
-import { IButtonSearch, IPeople } from '../types/types';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { Context } from '../App';
 
-function ButtonSearch(props: IButtonSearch) {
+function ButtonSearch() {
+
+  const {inputValue, itemAllPages, updateLoading, updateData, updateArrAllPages, updatePage} = useContext(Context);
+
   const navigate = useNavigate();
   const handleButtonClick = () => {
-    props.updateLoading(true);
-    localStorage.setItem('inputValue', props.input);
-    getPerson(props.input, 0, props.itemAllPages).then((data) => {
+    updateLoading(true);
+    localStorage.setItem('inputValue', inputValue);
+    getPerson(inputValue, 0, itemAllPages).then((data) => {
       if (data) {
-        console.log(data);
-        Array.isArray(data)
-          ? props.updateData(data.results)
-          : props.updateData(data as IPeople);
-        props.updateArrAllPages(getAllPages(data.count));
-        props.updatePage(1);
-        navigate('/');
+        if (inputValue === '') {
+          updateData(data.results);
+          updateArrAllPages(getAllPages(data.count));
+        } else {
+          updateData(data);
+          updateArrAllPages([1]);
+        }
+        updatePage(1);
+        // navigate('/1');
       } else {
         navigate('/error');
       }
-      props.updateLoading(false);
+      updateLoading(false);
     });
   };
 

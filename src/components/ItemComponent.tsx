@@ -1,58 +1,89 @@
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { getPerson } from '../API/getPerson';
 import { getAllPages } from '../pagination/getAllPages';
-import { IItemComponents, ITestData } from '../types/types';
-import { useEffect, useState } from 'react';
+import { ITestData } from '../types/types';
+import { useContext, useEffect, useState } from 'react';
 import '../style/style.css';
 import { getPokemon } from '../API/getPokemon';
+import { Context } from '../App';
 
-export function ItemComponent(props: IItemComponents) {
+export function ItemComponent() {
+
+  const {data, inputValue, itemAllPages, lastPage, updateData, updateArrAllPages, updatePage, updateSetDetailData, arrAllPages} = useContext(Context);
+
   const { 1: number } = useParams();
   const [isClosed, setIsClosed] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log(props.data);
+  console.log(number);
+  console.log(arrAllPages)
+
+  useEffect(() => {  
     if (number === undefined) {
-      navigate('/1');
+      // navigate('/1');
+      navigate('/');
     } else if (
       Number.isNaN(Number(number)) ||
-      Number(number) > props.lastPage
+      Number(number) > lastPage
     ) {
       navigate('/error');
     } else {
       const pagination = document.querySelector('.pagination') as HTMLElement;
       pagination.classList.remove('hidden');
-      props.updatePage(Number(number));
-      const offset = (Number(number) - 1) * props.itemAllPages;
-      getPerson(props.input, offset, props.itemAllPages).then((data) => {
+      updatePage(Number(number));
+      const offset = (Number(number) - 1) * itemAllPages;
+      getPerson(inputValue, offset, itemAllPages).then((data) => {
         if (data) {
-          props.updateData(data.results);
-          props.updateArrAllPages(getAllPages(data.count));
+          if (inputValue === '') {
+            updateData(data.results);
+            updateArrAllPages(getAllPages(data.count));
+          } else {
+            updateData(data);
+            // updateArrAllPages([1]);
+          }
         }
       });
     }
   }, [number]);
 
   function handlePageClick(e: ITestData) {
-    if (isClosed) {
-      setIsClosed(false);
-      getPokemon(e.url).then((data) => {
-        if (data) {
-          props.updateSetDetailData(data);
-        }
-      });
-    } else {
-      setIsClosed(true);
-      navigate(`/${number}`);
+    console.log(e);
+
+    if (e.url) {
+      if (isClosed) {
+        setIsClosed(false);
+        getPokemon(e.url).then((data) => {
+          if (data) {
+            console.log(data);
+            updateSetDetailData(data);
+          }
+        });
+      } else {
+        setIsClosed(true);
+        navigate(`/${number}`);
+      }
+    } 
+    else {
+      if (isClosed) {
+        setIsClosed(false);
+        // updateSetDetailData(e);
+        // getPokemon(e.species.url).then((data) => {
+        //   if (data) {
+        //     updateSetDetailData(data);
+        //   }
+        // });
+      } else {
+        setIsClosed(true);
+        // navigate(`/${number}`);
+      }
     }
   }
 
   return (
     <>
       <div>
-        {Array.isArray(props.data) ? (
-          props.data.map((item, index) => (
+        {Array.isArray(data) ? (
+          data.map((item, index) => (
             <div
               onClick={() => handlePageClick(item)}
               className="description-person"
@@ -61,10 +92,10 @@ export function ItemComponent(props: IItemComponents) {
           ))
         ) : (
           <div
-            onClick={() => handlePageClick(props.data as ITestData)}
+            onClick={() => handlePageClick(data as ITestData)}
             className="description-person"
             key={1}
-          >{`Name: ${props.data.name};`}</div>
+          >{`Name: ${data.name};`}</div>
         )}
       </div>
       <Outlet />
