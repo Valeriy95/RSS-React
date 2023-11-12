@@ -7,7 +7,7 @@ import { Context } from '../App';
 
 function ButtonPagination() {
 
-  const {page, inputValue, itemAllPages, lastPage, updateLoading, updateData, updateArrAllPages, updatePage , updateItemAllPages, updateSetLastPage} = useContext(Context);
+  const {page, inputValue, itemAllPages, lastPage, updateLoading, updateData, updateArrAllPages, updatePage , updateItemAllPages, updateSetLastPage} = useContext(Context)!;
 
   const navigate = useNavigate();
 
@@ -24,12 +24,11 @@ function ButtonPagination() {
   };
 
   const incrementPage = (p: number) => {
-    console.log(p);
-    if (p === lastPage - 1) {
+    if (p === lastPage as number - 1) {
       removeStylePagesNext();
       navigate(`/${p + 1}`);
     }
-    if (p < lastPage) {
+    if (p < (lastPage as number)) {
       if (p === 1) {
         addStylePagesPrevious();
         navigate(`/${p + 1}`);
@@ -73,7 +72,7 @@ function ButtonPagination() {
 
     updateLoading(true);
 
-    getPerson(inputValue, 0, selectedValue).then((data) => {
+    getPerson(inputValue as string, 0, selectedValue).then((data) => {
       updatePage(1);
       if (data) {
         updateData(data.results);
@@ -129,20 +128,20 @@ function ButtonPagination() {
       </div>
       <div
         className="page btn-previous"
-        onClick={() => decrementPage(page)}
+        onClick={() => decrementPage(page as number)}
       >
         {'<'}
       </div>
       <div className="page">{`${page}`}</div>
       <button
         className="page active-pagination next-page"
-        onClick={() => incrementPage(page)}
+        onClick={() => incrementPage(page as number)}
       >
         {'>'}
       </button>
       <button
         className="page active-pagination last-page"
-        onClick={() => getLastPage(itemAllPages)}
+        onClick={() => getLastPage(itemAllPages as number)}
       >
         {'>>'}
       </button>

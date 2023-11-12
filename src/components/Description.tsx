@@ -4,7 +4,7 @@ import { Context } from '../App';
 
 export function Description() {
 
-  const { detailData } = useContext(Context);
+  const { detailData } = useContext(Context)!;
 
   const navigate = useNavigate();
   const { 1: number } = useParams();

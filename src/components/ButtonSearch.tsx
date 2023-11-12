@@ -7,23 +7,21 @@ import { Context } from '../App';
 
 function ButtonSearch() {
 
-  const {inputValue, itemAllPages, updateLoading, updateData, updateArrAllPages, updatePage} = useContext(Context);
+  const {inputValue, itemAllPages, updateLoading, updateData, updateArrAllPages, updatePage} = useContext(Context)!;
 
   const navigate = useNavigate();
   const handleButtonClick = () => {
     updateLoading(true);
-    localStorage.setItem('inputValue', inputValue);
-    getPerson(inputValue, 0, itemAllPages).then((data) => {
+    localStorage.setItem('inputValue', inputValue as string);
+    getPerson(inputValue as string, 0, itemAllPages as number).then((data) => {
       if (data) {
         if (inputValue === '') {
           updateData(data.results);
           updateArrAllPages(getAllPages(data.count));
         } else {
           updateData(data);
-          updateArrAllPages([1]);
         }
         updatePage(1);
-        // navigate('/1');
       } else {
         navigate('/error');
       }

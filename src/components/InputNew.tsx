@@ -4,7 +4,7 @@ import { Context } from '../App';
 
 function Input() {
 
-  const {inputValue, updateInput} = useContext(Context);
+  const {inputValue, updateInput} = useContext(Context)!;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;

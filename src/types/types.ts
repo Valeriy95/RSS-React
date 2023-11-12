@@ -378,21 +378,21 @@ interface ISprites {
 }
 
 export interface IContext {
-  inputValue: string;
-  error: boolean;
+  inputValue: string | undefined;
+  error: boolean | undefined;
   updateInput: (newInput: string) => void;
-  itemAllPages: number;
+  itemAllPages: number | undefined;
   updateLoading: (newLoading: boolean) => void;
   updateData: (newData: DataPerson) => void;
   updateArrAllPages: (newArrAllPages: number[]) => void;
   updatePage: (newPage: number) => void;
   updateError: (newEr: boolean) => void;
-  data: DataPerson;
-  lastPage: number;
+  data: DataPerson | undefined;
+  lastPage: number | undefined;
   updateSetDetailData: (data: Pokemon) => void;
   detailData: Pokemon | undefined;
-  page: number;
+  page: number | undefined;
   updateItemAllPages: (newPage: number) => void;
   updateSetLastPage: (newPage: number) => void;
-  arrAllPages: number[];
+  arrAllPages: number[] | undefined;
 }

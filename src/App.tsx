@@ -15,7 +15,7 @@ import Description from './components/Description';
 import ButtonPagination from './components/ButtonPagination';
 import React from 'react';
 
-export const Context = React.createContext<IContext>();
+export const Context = React.createContext<IContext | undefined>(undefined);
 
 function App() {
   const [inputValue, setInputValue] = useState<string>(localStorage.getItem('inputValue') || '');
@@ -45,7 +45,6 @@ function App() {
           setArrAllPages(getAllPages(data.count));
         } else {
           setData(data);
-          // setArrAllPages([1]);
         }
       }
 

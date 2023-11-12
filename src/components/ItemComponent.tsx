@@ -9,7 +9,7 @@ import { Context } from '../App';
 
 export function ItemComponent() {
 
-  const {data, inputValue, itemAllPages, lastPage, updateData, updateArrAllPages, updatePage, updateSetDetailData, arrAllPages} = useContext(Context);
+  const {data, inputValue, itemAllPages, lastPage, updateData, updateArrAllPages, updatePage, updateSetDetailData, arrAllPages} = useContext(Context)!;
 
   const { 1: number } = useParams();
   const [isClosed, setIsClosed] = useState(true);
@@ -20,26 +20,24 @@ export function ItemComponent() {
 
   useEffect(() => {  
     if (number === undefined) {
-      // navigate('/1');
       navigate('/');
     } else if (
       Number.isNaN(Number(number)) ||
-      Number(number) > lastPage
+      Number(number) > (lastPage as number)
     ) {
       navigate('/error');
     } else {
       const pagination = document.querySelector('.pagination') as HTMLElement;
       pagination.classList.remove('hidden');
       updatePage(Number(number));
-      const offset = (Number(number) - 1) * itemAllPages;
-      getPerson(inputValue, offset, itemAllPages).then((data) => {
+      const offset = (Number(number) - 1) * (itemAllPages as number);
+      getPerson(inputValue as string, offset, itemAllPages as number).then((data) => {
         if (data) {
           if (inputValue === '') {
             updateData(data.results);
             updateArrAllPages(getAllPages(data.count));
           } else {
             updateData(data);
-            // updateArrAllPages([1]);
           }
         }
       });
@@ -54,7 +52,6 @@ export function ItemComponent() {
         setIsClosed(false);
         getPokemon(e.url).then((data) => {
           if (data) {
-            console.log(data);
             updateSetDetailData(data);
           }
         });
@@ -66,15 +63,8 @@ export function ItemComponent() {
     else {
       if (isClosed) {
         setIsClosed(false);
-        // updateSetDetailData(e);
-        // getPokemon(e.species.url).then((data) => {
-        //   if (data) {
-        //     updateSetDetailData(data);
-        //   }
-        // });
       } else {
         setIsClosed(true);
-        // navigate(`/${number}`);
       }
     }
   }

@@ -3,7 +3,8 @@ import { Context } from '../App';
 
 function ErrorButton() {
 
-  const {updateError} = useContext(Context);
+  const {updateError} = useContext(Context)!;
+
 
   const handleButtonClick = () => {
     updateError(true);
