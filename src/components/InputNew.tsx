@@ -1,15 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import '../style/style.css';
-import { Context } from '../App';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, setInputValue } from '../slices/appSlice';
 
 function Input() {
-
-  const {inputValue, updateInput} = useContext(Context)!;
+  const dispatch = useDispatch();
+  const inputValue = useSelector((state: RootState) => state.app.inputValue);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     localStorage.setItem('inputValue', newValue);
-    updateInput(newValue);
+    dispatch(setInputValue(newValue));
   };
 
   return (

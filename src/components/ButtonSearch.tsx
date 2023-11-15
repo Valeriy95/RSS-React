@@ -2,30 +2,39 @@ import '../style/style.css';
 import { getPerson } from '../API/getPerson';
 import { getAllPages } from '../pagination/getAllPages';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { Context } from '../App';
+import {
+  setPage,
+  setLoading,
+  setData,
+  setArrAllPages,
+  RootState,
+} from '../slices/appSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ButtonSearch() {
-
-  const {inputValue, itemAllPages, updateLoading, updateData, updateArrAllPages, updatePage} = useContext(Context)!;
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const itemAllPages = useSelector(
+    (state: RootState) => state.app.itemAllPages,
+  );
+  const inputValue = useSelector((state: RootState) => state.app.inputValue);
+
   const handleButtonClick = () => {
-    updateLoading(true);
+    dispatch(setLoading(true));
     localStorage.setItem('inputValue', inputValue as string);
     getPerson(inputValue as string, 0, itemAllPages as number).then((data) => {
       if (data) {
         if (inputValue === '') {
-          updateData(data.results);
-          updateArrAllPages(getAllPages(data.count));
+          dispatch(setData(data.results));
+          dispatch(setArrAllPages(getAllPages(data.count)));
         } else {
-          updateData(data);
+          dispatch(setData(data));
         }
-        updatePage(1);
+        dispatch(setPage(1));
       } else {
         navigate('/error');
       }
-      updateLoading(false);
+      dispatch(setLoading(false));
     });
   };
 

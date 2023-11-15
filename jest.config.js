@@ -11,4 +11,3 @@ module.exports = {
     '\\.(css|less|sass|scss)$': 'jest-transform-stub',
   },
 };
-

@@ -1,13 +1,11 @@
-import { useContext } from 'react';
-import { Context } from '../App';
+import { useDispatch } from 'react-redux';
+import { setError } from '../slices/appSlice';
 
 function ErrorButton() {
-
-  const {updateError} = useContext(Context)!;
-
+  const dispatch = useDispatch();
 
   const handleButtonClick = () => {
-    updateError(true);
+    dispatch(setError(true));
   };
 
   return (

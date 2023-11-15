@@ -5,7 +5,7 @@ export interface IPeople {
   next: string | null;
   previous: string | null;
   results: IPerson[];
-  name: IPerson
+  name: IPerson;
 }
 
 export interface IPerson {
@@ -50,7 +50,7 @@ export interface IButtonSearch {
   updatePage: (newPage: number) => void;
 }
 
-export type DataPerson =  ITestData[] | IPeople | ITestData;
+export type DataPerson = ITestData[] | IPeople | ITestData;
 
 export interface IItemPerson {
   data: DataPerson;
@@ -90,7 +90,7 @@ export interface ITest {
 }
 
 export interface IItemComponents {
-  data: DataPerson
+  data: DataPerson;
   input: string;
   itemAllPages: number;
   lastPage: number;
@@ -98,7 +98,6 @@ export interface IItemComponents {
   updateArrAllPages: (newArrAllPages: number[]) => void;
   updatePage: (newPage: number) => void;
   updateSetDetailData: (data: Pokemon) => void;
-
 }
 
 export interface ITestData {
@@ -129,7 +128,6 @@ export interface IGameInfo {
   url: string;
 }
 
-
 export interface Pokemon {
   abilities: Ability[];
   base_experience: number;
@@ -153,29 +151,29 @@ export interface Pokemon {
 }
 
 export interface IDetailData {
-  detailData: Pokemon | undefined
+  detailData: Pokemon | undefined;
 }
 
 interface Ability {
   ability: IAllItems;
-  is_hidden: boolean,
-  slot: number,
+  is_hidden: boolean;
+  slot: number;
 }
 
 interface IHeldItem {
   item: {
-    name: string,
-    url: string,
-  },
-  version_details: IVersionDetails[]
+    name: string;
+    url: string;
+  };
+  version_details: IVersionDetails[];
 }
 
 interface IVersionDetails {
-    rarity: number,
-    version: {
-      name: string,
-      url: string,
-    }
+  rarity: number;
+  version: {
+    name: string;
+    url: string;
+  };
 }
 
 interface IMove {
@@ -201,14 +199,14 @@ interface IStat {
 }
 
 interface ISprites {
-  back_default: string | null; 
-  back_female: string | null; 
-  back_shiny: string | null; 
-  back_shiny_female: string | null; 
-  front_default: string | null;  
-  front_female: string | null; 
-  front_shiny: string | null; 
-  front_shiny_female: string | null; 
+  back_default: string | null;
+  back_female: string | null;
+  back_shiny: string | null;
+  back_shiny_female: string | null;
+  front_default: string | null;
+  front_female: string | null;
+  front_shiny: string | null;
+  front_shiny_female: string | null;
   other: {
     dream_world: {
       front_default: string | null;
@@ -223,27 +221,27 @@ interface ISprites {
     official_artwork: {
       front_default: string | null;
       front_shiny: string | null;
-    }
+    };
   };
   versions: {
     generation_i: {
       red_blue: {
-        back_default: string; 
-        back_gray: string; 
-        back_transparent: string; 
-        front_default: string; 
-        front_gray: string; 
-        front_transparent: string; 
+        back_default: string;
+        back_gray: string;
+        back_transparent: string;
+        front_default: string;
+        front_gray: string;
+        front_transparent: string;
       };
       yellow: {
-        back_default: string; 
-        back_gray: string; 
-        back_transparent: string; 
-        front_default: string; 
-        front_gray: string; 
-        front_transparent: string; 
+        back_default: string;
+        back_gray: string;
+        back_transparent: string;
+        front_default: string;
+        front_gray: string;
+        front_transparent: string;
       };
-    }
+    };
     generation_ii: {
       crystal: {
         back_default: string;
@@ -268,8 +266,8 @@ interface ISprites {
         front_default: string;
         front_shiny: string;
         front_transparent: string;
-      }
-    }
+      };
+    };
     generation_iii: {
       emerald: {
         front_default: string;
@@ -280,14 +278,14 @@ interface ISprites {
         back_shiny: string;
         front_default: string;
         front_shiny: string;
-      }
+      };
       ruby_sapphire: {
         back_default: string;
         back_shiny: string;
         front_default: string;
-        front_shiny: string;   
-      }
-    }
+        front_shiny: string;
+      };
+    };
     generation_iv: {
       diamond_pearl: {
         back_default: string;
@@ -318,7 +316,7 @@ interface ISprites {
         front_female: string | null;
         front_shiny: string;
         front_shiny_female: string | null;
-      }
+      };
     };
     generation_v: {
       black_white: {
@@ -340,7 +338,7 @@ interface ISprites {
         front_female: string | null;
         front_shiny: string;
         front_shiny_female: string | null;
-      }
+      };
     };
     generation_vi: {
       omegaruby_alphasapphire: {
@@ -355,7 +353,7 @@ interface ISprites {
         front_shiny: string;
         front_shiny_female: string | null;
       };
-    }
+    };
     generation_vii: {
       icons: {
         front_default: string;
@@ -367,14 +365,14 @@ interface ISprites {
         front_shiny: string;
         front_shiny_female: string | null;
       };
-    }
+    };
     generation_viii: {
       icons: {
         front_default: string;
         front_female: string | null;
       };
     };
-  }
+  };
 }
 
 export interface IContext {
@@ -395,4 +393,16 @@ export interface IContext {
   updateItemAllPages: (newPage: number) => void;
   updateSetLastPage: (newPage: number) => void;
   arrAllPages: number[] | undefined;
+}
+
+export interface IAppState {
+  inputValue: string;
+  detailData: Pokemon | null; // Замените SomeType на тип, который будет использоваться для detailData
+  data: DataPerson; // Замените SomeDataType на тип элементов массива data
+  loading: boolean;
+  arrAllPages: number[];
+  page: number;
+  itemAllPages: number;
+  lastPage: number;
+  error: boolean;
 }

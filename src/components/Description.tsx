@@ -1,10 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useContext } from 'react';
-import { Context } from '../App';
+import { useSelector } from 'react-redux';
+import { RootState } from '../slices/appSlice';
 
 export function Description() {
-
-  const { detailData } = useContext(Context)!;
+  const detailData = useSelector((state: RootState) => state.app.detailData);
 
   const navigate = useNavigate();
   const { 1: number } = useParams();

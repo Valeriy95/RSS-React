@@ -1,11 +1,9 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
-const { BrowserRouter: Router } = require(react-router-dom);
+const { BrowserRouter: Router } = require(react - router - dom);
 const ItemComponent = require('../src/components/ItemComponent');
 
-
 test('отображает указанное количество карточек', () => {
-
   const mockContextValues = {
     data: [{ name: 'Card 1' }, { name: 'Card 2' }],
     inputValue: '',
@@ -21,7 +19,7 @@ test('отображает указанное количество карточ�
   render(
     <ContextProvider value={mockContextValues}>
       <ItemComponent />
-    </ContextProvider>
+    </ContextProvider>,
   );
 
   expect(screen.getByText('Name: Card 1;')).toBeInTheDocument();
@@ -29,7 +27,6 @@ test('отображает указанное количество карточ�
 });
 
 test('отображает сообщение, если карты отсутствуют', () => {
-
   const mockContextValues = {
     data: [],
     inputValue: '',
@@ -45,7 +42,7 @@ test('отображает сообщение, если карты отсутс�
   render(
     <ContextProvider value={mockContextValues}>
       <ItemComponent />
-    </ContextProvider>
+    </ContextProvider>,
   );
 
   expect(screen.getByText('Сообщение об отсутствии карт')).toBeInTheDocument();

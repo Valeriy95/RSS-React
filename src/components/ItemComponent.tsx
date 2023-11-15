@@ -2,23 +2,35 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { getPerson } from '../API/getPerson';
 import { getAllPages } from '../pagination/getAllPages';
 import { ITestData } from '../types/types';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../style/style.css';
 import { getPokemon } from '../API/getPokemon';
-import { Context } from '../App';
+import {
+  setPage,
+  setData,
+  setArrAllPages,
+  setDetailData,
+  RootState,
+} from '../slices/appSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export function ItemComponent() {
-
-  const {data, inputValue, itemAllPages, lastPage, updateData, updateArrAllPages, updatePage, updateSetDetailData, arrAllPages} = useContext(Context)!;
-
   const { 1: number } = useParams();
   const [isClosed, setIsClosed] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const data = useSelector((state: RootState) => state.app.data);
+  const itemAllPages = useSelector(
+    (state: RootState) => state.app.itemAllPages,
+  );
+  const lastPage = useSelector((state: RootState) => state.app.lastPage);
+  const arrAllPages = useSelector((state: RootState) => state.app.arrAllPages);
+  const inputValue = useSelector((state: RootState) => state.app.inputValue);
 
   console.log(number);
-  console.log(arrAllPages)
+  console.log(arrAllPages);
 
-  useEffect(() => {  
+  useEffect(() => {
     if (number === undefined) {
       navigate('/');
     } else if (
@@ -29,18 +41,20 @@ export function ItemComponent() {
     } else {
       const pagination = document.querySelector('.pagination') as HTMLElement;
       pagination.classList.remove('hidden');
-      updatePage(Number(number));
+      dispatch(setPage(Number(number)));
       const offset = (Number(number) - 1) * (itemAllPages as number);
-      getPerson(inputValue as string, offset, itemAllPages as number).then((data) => {
-        if (data) {
-          if (inputValue === '') {
-            updateData(data.results);
-            updateArrAllPages(getAllPages(data.count));
-          } else {
-            updateData(data);
+      getPerson(inputValue as string, offset, itemAllPages as number).then(
+        (dataResponse) => {
+          if (dataResponse) {
+            if (inputValue === '') {
+              dispatch(setData(dataResponse.results));
+              dispatch(setArrAllPages(getAllPages(dataResponse.count)));
+            } else {
+              dispatch(setData(dataResponse));
+            }
           }
-        }
-      });
+        },
+      );
     }
   }, [number]);
 
@@ -50,17 +64,16 @@ export function ItemComponent() {
     if (e.url) {
       if (isClosed) {
         setIsClosed(false);
-        getPokemon(e.url).then((data) => {
-          if (data) {
-            updateSetDetailData(data);
+        getPokemon(e.url).then((dataResponse) => {
+          if (dataResponse) {
+            dispatch(setDetailData(dataResponse));
           }
         });
       } else {
         setIsClosed(true);
         navigate(`/${number}`);
       }
-    } 
-    else {
+    } else {
       if (isClosed) {
         setIsClosed(false);
       } else {

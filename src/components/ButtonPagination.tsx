@@ -2,14 +2,26 @@ import { getAllPages } from '../pagination/getAllPages';
 import '../style/style.css';
 import { getPerson } from '../API/getPerson';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { Context } from '../App';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setLastPage,
+  setPage,
+  setItemAllPages,
+  setLoading,
+  setData,
+  setArrAllPages,
+  RootState,
+} from '../slices/appSlice';
 
 function ButtonPagination() {
-
-  const {page, inputValue, itemAllPages, lastPage, updateLoading, updateData, updateArrAllPages, updatePage , updateItemAllPages, updateSetLastPage} = useContext(Context)!;
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const page = useSelector((state: RootState) => state.app.page);
+  const itemAllPages = useSelector(
+    (state: RootState) => state.app.itemAllPages,
+  );
+  const lastPage = useSelector((state: RootState) => state.app.lastPage);
+  const inputValue = useSelector((state: RootState) => state.app.inputValue);
 
   const decrementPage = (p: number) => {
     if (p - 1 === 1) {
@@ -17,14 +29,14 @@ function ButtonPagination() {
       navigate(`/${p - 1}`);
     }
     if (p > 1) {
-      updatePage(p - 1);
+      dispatch(setPage(p - 1));
       addStylePagesNext();
       navigate(`/${p - 1}`);
     }
   };
 
   const incrementPage = (p: number) => {
-    if (p === lastPage as number - 1) {
+    if (p === (lastPage as number) - 1) {
       removeStylePagesNext();
       navigate(`/${p + 1}`);
     }
@@ -33,7 +45,7 @@ function ButtonPagination() {
         addStylePagesPrevious();
         navigate(`/${p + 1}`);
       }
-      updatePage(p + 1);
+      dispatch(setPage(p + 1));
       navigate(`/${p + 1}`);
     }
   };
@@ -45,17 +57,16 @@ function ButtonPagination() {
     const totalCount = 1292;
     const lastPage = Math.ceil(totalCount / itemsPages);
 
-    updatePage(lastPage);
+    dispatch(setPage(lastPage));
     navigate(`/${lastPage}`);
   };
 
   const getStartPage = (itemPages: number) => {
-    updatePage(itemPages);
+    dispatch(setPage(itemPages));
     addStylePagesNext();
     removeStylePagesPrevious();
     navigate('/1');
   };
-
 
   function navigateToStart() {
     navigate('/1');
@@ -63,26 +74,25 @@ function ButtonPagination() {
 
   function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedValue: number = Number(event.target.value);
-    updateItemAllPages(selectedValue);
+    dispatch(setItemAllPages(selectedValue));
     const totalCount = 1292;
     const updateLastPage = Math.ceil(totalCount / selectedValue);
-    updateSetLastPage(updateLastPage);
+    dispatch(setLastPage(updateLastPage));
     removeStylePagesPrevious();
     addStylePagesNext();
 
-    updateLoading(true);
+    dispatch(setLoading(true));
 
-    getPerson(inputValue as string, 0, selectedValue).then((data) => {
-      updatePage(1);
-      if (data) {
-        updateData(data.results);
-        updateArrAllPages(getAllPages(data.count));
+    getPerson(inputValue as string, 0, selectedValue).then((dataRespon) => {
+      dispatch(setPage(1));
+      if (dataRespon) {
+        dispatch(setData(dataRespon.results));
+        dispatch(setArrAllPages(getAllPages(dataRespon.count)));
       }
-      updateLoading(false);
+      dispatch(setLoading(false));
     });
     navigateToStart();
   }
-
 
   const btnLastPage = document.querySelector('.last-page') as HTMLButtonElement;
   const btnNextPage = document.querySelector('.next-page') as HTMLButtonElement;
