@@ -1,6 +1,4 @@
-import { getAllPages } from '../pagination/getAllPages';
 import '../style/style.css';
-import { getPerson } from '../API/getPerson';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -8,8 +6,6 @@ import {
   setPage,
   setItemAllPages,
   setLoading,
-  setData,
-  setArrAllPages,
   RootState,
 } from '../slices/appSlice';
 
@@ -21,10 +17,11 @@ function ButtonPagination() {
     (state: RootState) => state.app.itemAllPages,
   );
   const lastPage = useSelector((state: RootState) => state.app.lastPage);
-  const inputValue = useSelector((state: RootState) => state.app.inputValue);
 
   const decrementPage = (p: number) => {
+    dispatch(setLoading(true));
     if (p - 1 === 1) {
+      dispatch(setPage(p - 1));
       removeStylePagesPrevious();
       navigate(`/${p - 1}`);
     }
@@ -33,24 +30,30 @@ function ButtonPagination() {
       addStylePagesNext();
       navigate(`/${p - 1}`);
     }
+    dispatch(setLoading(false));
   };
 
   const incrementPage = (p: number) => {
+    dispatch(setLoading(true));
     if (p === (lastPage as number) - 1) {
       removeStylePagesNext();
       navigate(`/${p + 1}`);
     }
     if (p < (lastPage as number)) {
       if (p === 1) {
+        dispatch(setPage(p + 1));
         addStylePagesPrevious();
         navigate(`/${p + 1}`);
+      } else {
+        dispatch(setPage(p + 1));
+        navigate(`/${p + 1}`);
       }
-      dispatch(setPage(p + 1));
-      navigate(`/${p + 1}`);
     }
+    dispatch(setLoading(false));
   };
 
   const getLastPage = (itemPages: number) => {
+    dispatch(setLoading(true));
     addStylePagesPrevious();
     removeStylePagesNext();
     const itemsPages = itemPages;
@@ -58,19 +61,23 @@ function ButtonPagination() {
     const lastPage = Math.ceil(totalCount / itemsPages);
 
     dispatch(setPage(lastPage));
+    dispatch(setLoading(false));
     navigate(`/${lastPage}`);
   };
 
   const getStartPage = (itemPages: number) => {
+    dispatch(setLoading(true));
     dispatch(setPage(itemPages));
     addStylePagesNext();
-    removeStylePagesPrevious();
+    removeStylePagesPrevious();   
+    dispatch(setLoading(false));
     navigate('/1');
   };
 
   function navigateToStart() {
     navigate('/1');
   }
+
 
   function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedValue: number = Number(event.target.value);
@@ -80,17 +87,6 @@ function ButtonPagination() {
     dispatch(setLastPage(updateLastPage));
     removeStylePagesPrevious();
     addStylePagesNext();
-
-    dispatch(setLoading(true));
-
-    getPerson(inputValue as string, 0, selectedValue).then((dataRespon) => {
-      dispatch(setPage(1));
-      if (dataRespon) {
-        dispatch(setData(dataRespon.results));
-        dispatch(setArrAllPages(getAllPages(dataRespon.count)));
-      }
-      dispatch(setLoading(false));
-    });
     navigateToStart();
   }
 

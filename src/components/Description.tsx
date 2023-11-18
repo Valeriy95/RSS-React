@@ -1,14 +1,22 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../slices/appSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setIsClosed,
+  setDetailData,
+  RootState,
+} from '../slices/appSlice';
 
 export function Description() {
   const detailData = useSelector((state: RootState) => state.app.detailData);
+  const dispatch = useDispatch();
 
+  
   const navigate = useNavigate();
   const { 1: number } = useParams();
 
   const closeDetail = () => {
+    dispatch(setIsClosed(true));
+    dispatch(setDetailData(null));
     navigate(`/${number}`);
   };
 

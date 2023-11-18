@@ -1,8 +1,9 @@
+import React from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { getPerson } from '../API/getPerson';
+import { useGetPersonQuery } from '../API/getPerson';
 import { getAllPages } from '../pagination/getAllPages';
-import { ITestData } from '../types/types';
-import { useEffect, useState } from 'react';
+import { ITestData, Pokemon } from '../types/types';
+import { useEffect } from 'react';
 import '../style/style.css';
 import { getPokemon } from '../API/getPokemon';
 import {
@@ -10,13 +11,13 @@ import {
   setData,
   setArrAllPages,
   setDetailData,
+  setIsClosed,
   RootState,
 } from '../slices/appSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 export function ItemComponent() {
   const { 1: number } = useParams();
-  const [isClosed, setIsClosed] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const data = useSelector((state: RootState) => state.app.data);
@@ -24,15 +25,26 @@ export function ItemComponent() {
     (state: RootState) => state.app.itemAllPages,
   );
   const lastPage = useSelector((state: RootState) => state.app.lastPage);
-  const arrAllPages = useSelector((state: RootState) => state.app.arrAllPages);
   const inputValue = useSelector((state: RootState) => state.app.inputValue);
+  const page = useSelector((state: RootState) => state.app.page);
+  const isClosed = useSelector((state: RootState) => state.app.isClosed);
 
-  console.log(number);
-  console.log(arrAllPages);
+
+  const offset = (Number(number) - 1) * (itemAllPages as number);
+
+  const { data: responseData } = useGetPersonQuery({
+    text: inputValue,
+    item: offset,
+    lim: itemAllPages,
+  });
+
+
+
+  // const { data: pokemonData, error: pokemonError } = useGetPokemonQuery(urlTest as string);
 
   useEffect(() => {
     if (number === undefined) {
-      navigate('/');
+      navigate('/1');
     } else if (
       Number.isNaN(Number(number)) ||
       Number(number) > (lastPage as number)
@@ -42,44 +54,45 @@ export function ItemComponent() {
       const pagination = document.querySelector('.pagination') as HTMLElement;
       pagination.classList.remove('hidden');
       dispatch(setPage(Number(number)));
-      const offset = (Number(number) - 1) * (itemAllPages as number);
-      getPerson(inputValue as string, offset, itemAllPages as number).then(
-        (dataResponse) => {
-          if (dataResponse) {
-            if (inputValue === '') {
-              dispatch(setData(dataResponse.results));
-              dispatch(setArrAllPages(getAllPages(dataResponse.count)));
-            } else {
-              dispatch(setData(dataResponse));
-            }
-          }
-        },
-      );
+      if (responseData) {
+        if (inputValue === '') {
+          dispatch(setData(responseData.results));
+          dispatch(setArrAllPages(getAllPages(responseData.count)));
+        } else {
+          dispatch(setData(responseData));
+        }
+      }
     }
-  }, [number]);
+  // }, [responseData, itemAllPages, urlTest, pokemonData, data]);
+}, [data, responseData, page]);
 
-  function handlePageClick(e: ITestData) {
-    console.log(e);
 
+  function handlePageClickArr(e: ITestData) {
     if (e.url) {
       if (isClosed) {
-        setIsClosed(false);
-        getPokemon(e.url).then((dataResponse) => {
-          if (dataResponse) {
-            dispatch(setDetailData(dataResponse));
+        dispatch(setIsClosed(false));
+        getPokemon(e.url).then((pokemonData) => {
+          if (pokemonData) {
+            dispatch(setDetailData(pokemonData));
           }
-        });
+        }); 
       } else {
-        setIsClosed(true);
+        dispatch(setIsClosed(true));
+        dispatch(setDetailData(null));
         navigate(`/${number}`);
       }
-    } else {
-      if (isClosed) {
-        setIsClosed(false);
-      } else {
-        setIsClosed(true);
-      }
-    }
+  }
+}
+
+
+    function handlePageClick(dataPokem: Pokemon) {
+        if (isClosed) {
+          dispatch(setDetailData(dataPokem));
+          dispatch(setIsClosed(false));
+        } else {
+          dispatch(setDetailData(null));
+          dispatch(setIsClosed(true));
+        }
   }
 
   return (
@@ -88,14 +101,14 @@ export function ItemComponent() {
         {Array.isArray(data) ? (
           data.map((item, index) => (
             <div
-              onClick={() => handlePageClick(item)}
+              onClick={() => handlePageClickArr(item)}
               className="description-person"
               key={index}
             >{`Name: ${item.name};`}</div>
           ))
         ) : (
           <div
-            onClick={() => handlePageClick(data as ITestData)}
+            onClick={() => handlePageClick(data as Pokemon)}
             className="description-person"
             key={1}
           >{`Name: ${data.name};`}</div>

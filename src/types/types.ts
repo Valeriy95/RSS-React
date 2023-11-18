@@ -397,12 +397,14 @@ export interface IContext {
 
 export interface IAppState {
   inputValue: string;
-  detailData: Pokemon | null; // Замените SomeType на тип, который будет использоваться для detailData
-  data: DataPerson; // Замените SomeDataType на тип элементов массива data
+  inputCurrentValue: string;
+  detailData: Pokemon | null | ITestData;
+  data: DataPerson | Pokemon;
   loading: boolean;
   arrAllPages: number[];
   page: number;
   itemAllPages: number;
   lastPage: number;
   error: boolean;
+  isClosed: boolean;
 }

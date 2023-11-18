@@ -4,6 +4,7 @@ import store from '../store/store';
 
 const initialState: IAppState = {
   inputValue: localStorage.getItem('inputValue') || '',
+  inputCurrentValue: localStorage.getItem('inputValue') || '',
   detailData: null,
   data: [],
   loading: false,
@@ -12,6 +13,7 @@ const initialState: IAppState = {
   itemAllPages: 10,
   lastPage: 130,
   error: false,
+  isClosed: true,
 };
 
 export const appSlice = createSlice({
@@ -48,6 +50,12 @@ export const appSlice = createSlice({
     setError: (state, action: PayloadAction<boolean>) => {
       state.error = action.payload;
     },
+    setIsClosed: (state, action: PayloadAction<boolean>) => {
+      state.isClosed = action.payload;
+    },
+    setInputCurrentValue: (state, action: PayloadAction<string>) => {
+      state.inputCurrentValue = action.payload;
+    },
   },
 });
 
@@ -64,6 +72,8 @@ export const {
   setItemAllPages,
   setLastPage,
   setError,
+  setIsClosed,
+  setInputCurrentValue
 } = appSlice.actions;
 
 export default appSlice.reducer;

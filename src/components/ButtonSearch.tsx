@@ -1,5 +1,5 @@
 import '../style/style.css';
-import { getPerson } from '../API/getPerson';
+import { useGetPersonQuery } from '../API/getPerson';
 import { getAllPages } from '../pagination/getAllPages';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -7,6 +7,7 @@ import {
   setLoading,
   setData,
   setArrAllPages,
+  setInputValue,
   RootState,
 } from '../slices/appSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,24 +19,32 @@ function ButtonSearch() {
     (state: RootState) => state.app.itemAllPages,
   );
   const inputValue = useSelector((state: RootState) => state.app.inputValue);
+  const inputCurrentValue = useSelector((state: RootState) => state.app.inputCurrentValue);
+
+  const { data, error } = useGetPersonQuery({
+    text: inputValue as string,
+    item: 0,
+    lim: itemAllPages as number,
+  });
 
   const handleButtonClick = () => {
     dispatch(setLoading(true));
-    localStorage.setItem('inputValue', inputValue as string);
-    getPerson(inputValue as string, 0, itemAllPages as number).then((data) => {
-      if (data) {
-        if (inputValue === '') {
-          dispatch(setData(data.results));
-          dispatch(setArrAllPages(getAllPages(data.count)));
-        } else {
-          dispatch(setData(data));
-        }
-        dispatch(setPage(1));
+    localStorage.setItem('inputValue', inputCurrentValue as string);
+    dispatch(setInputValue(inputCurrentValue));
+
+    if (data) {
+      if (inputValue === '') {
+        dispatch(setData(data.results));
+        dispatch(setArrAllPages(getAllPages(data.count)));
       } else {
-        navigate('/error');
+        dispatch(setData(data));
       }
-      dispatch(setLoading(false));
-    });
+      dispatch(setPage(1));
+    } else if (error) {
+      navigate('/error');
+    }
+
+    dispatch(setLoading(false));
   };
 
   return (

@@ -1,16 +1,15 @@
 import React from 'react';
 import '../style/style.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, setInputValue } from '../slices/appSlice';
+import { RootState, setInputCurrentValue } from '../slices/appSlice';
 
 function Input() {
   const dispatch = useDispatch();
-  const inputValue = useSelector((state: RootState) => state.app.inputValue);
+  const inputCurrentValue = useSelector((state: RootState) => state.app.inputCurrentValue);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    localStorage.setItem('inputValue', newValue);
-    dispatch(setInputValue(newValue));
+    dispatch(setInputCurrentValue(newValue));
   };
 
   return (
@@ -18,7 +17,7 @@ function Input() {
       <input
         type="text"
         onChange={handleInputChange}
-        value={inputValue}
+        value={inputCurrentValue}
         className="input"
       />
     </>

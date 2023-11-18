@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
-import { getPerson } from './API/getPerson';
+import {  useGetPersonQuery } from './API/getPerson';
 import './App.css';
 import './style/style.css';
 import { getAllPages } from './pagination/getAllPages';
-import InputNew from './components/InputNew';
+import InputNew from './components/Input';
 import ButtonSearch from './components/ButtonSearch';
 import ErrorButton from './components/ButtonError';
 import ErrorBoundary from './components/ErrorBoundary';
-import { IContext } from './types/types';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ItemComponent } from './components/ItemComponent';
 import { ErrorComponent } from './components/ErrorComponent';
 import Description from './components/Description';
 import ButtonPagination from './components/ButtonPagination';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   RootState,
@@ -23,7 +21,6 @@ import {
   setLoading,
 } from './slices/appSlice';
 
-export const Context = React.createContext<IContext | undefined>(undefined);
 
 function App() {
   const dispatch = useDispatch();
@@ -38,6 +35,12 @@ function App() {
     error,
   } = useSelector((state: RootState) => state.app);
 
+  const { data: responseData, error: responseError } = useGetPersonQuery({
+    text: inputValue,
+    item: 0,
+    lim: itemAllPages,
+  });
+
   useEffect(() => {
     const storedValue = localStorage.getItem('inputValue');
     if (storedValue !== null) {
@@ -46,23 +49,28 @@ function App() {
 
     dispatch(setLoading(true));
 
-    getPerson(inputValue, 0, itemAllPages).then((responseData) => {
-      if (responseData) {
-        if (inputValue === '') {
-          dispatch(setData(responseData.results));
-          dispatch(setArrAllPages(getAllPages(responseData.count)));
-        } else {
-          dispatch(setData(responseData));
-        }
+
+    if (responseData) {
+      if (inputValue === '') {
+        dispatch(setData(responseData.results));
+        dispatch(setArrAllPages(getAllPages(responseData.count)));
+      } else {
+        dispatch(setData(responseData));
       }
+    }
 
       dispatch(setLoading(false));
-    });
 
     if (detailData) {
       navigate(`${page}/details`);
     }
-  }, [detailData]);
+  }, [detailData, responseData, page]);
+
+  useEffect(() => {
+    if (responseError) {
+      navigate('/error');
+    }
+  }, [responseError]);
 
   return (
     <div>
