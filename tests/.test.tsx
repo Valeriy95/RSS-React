@@ -7,23 +7,22 @@ import { ItemComponent } from '../src/components/ItemComponent';
 
 const mockStore = configureStore();
 
-test('отображает указанное количество карточек', () => {
-  const mockStoreState  = {
+it('отображает указанное количество карточек', () => {
+  const mockStoreState = {
     app: {
-    data: [{ name: 'Card 1' }, { name: 'Card 2' }],
-    inputValue: '',
-    itemAllPages: 10,
-    lastPage: 2,
-    updateData: jest.fn(),
-    updateArrAllPages: jest.fn(),
-    updatePage: jest.fn(),
-    updateSetDetailData: jest.fn(),
-    arrAllPages: [1, 2],
-    }
+      data: [{ name: 'Card 1' }, { name: 'Card 2' }],
+      inputValue: '',
+      itemAllPages: 10,
+      lastPage: 2,
+      updateData: jest.fn(),
+      updateArrAllPages: jest.fn(),
+      updatePage: jest.fn(),
+      updateSetDetailData: jest.fn(),
+      arrAllPages: [1, 2],
+    },
   };
 
   const store = mockStore(mockStoreState);
-
 
   render(
     <Provider store={store}>
@@ -37,7 +36,7 @@ test('отображает указанное количество карточ�
   expect(screen.getByText('Name: Card 2;')).toBeInTheDocument();
 });
 
-test('отображает сообщение, если карты отсутствуют', () => {
+it('отображает сообщение, если карты отсутствуют', () => {
   const mockStoreState = {
     app: {
       data: [],
@@ -49,11 +48,11 @@ test('отображает сообщение, если карты отсутс�
       updatePage: jest.fn(),
       updateSetDetailData: jest.fn(),
       arrAllPages: [1],
-    }
+    },
   };
 
   const store = mockStore(mockStoreState);
-  
+
   render(
     <Provider store={store}>
       <BrowserRouter>

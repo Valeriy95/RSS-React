@@ -69,7 +69,7 @@ function ButtonPagination() {
     dispatch(setLoading(true));
     dispatch(setPage(itemPages));
     addStylePagesNext();
-    removeStylePagesPrevious();   
+    removeStylePagesPrevious();
     dispatch(setLoading(false));
     navigate('/1');
   };
@@ -77,7 +77,6 @@ function ButtonPagination() {
   function navigateToStart() {
     navigate('/1');
   }
-
 
   function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedValue: number = Number(event.target.value);

@@ -73,7 +73,7 @@ export const {
   setLastPage,
   setError,
   setIsClosed,
-  setInputCurrentValue
+  setInputCurrentValue,
 } = appSlice.actions;
 
 export default appSlice.reducer;

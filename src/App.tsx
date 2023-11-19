@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import {  useGetPersonQuery } from './API/getPerson';
+import { useGetAllPokemonsQuery } from './API/getAllPokemons';
 import './App.css';
 import './style/style.css';
 import { getAllPages } from './pagination/getAllPages';
@@ -21,7 +21,6 @@ import {
   setLoading,
 } from './slices/appSlice';
 
-
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,7 +34,7 @@ function App() {
     error,
   } = useSelector((state: RootState) => state.app);
 
-  const { data: responseData, error: responseError } = useGetPersonQuery({
+  const { data: responseData, error: responseError } = useGetAllPokemonsQuery({
     text: inputValue,
     item: 0,
     lim: itemAllPages,
@@ -49,7 +48,6 @@ function App() {
 
     dispatch(setLoading(true));
 
-
     if (responseData) {
       if (inputValue === '') {
         dispatch(setData(responseData.results));
@@ -59,7 +57,7 @@ function App() {
       }
     }
 
-      dispatch(setLoading(false));
+    dispatch(setLoading(false));
 
     if (detailData) {
       navigate(`${page}/details`);

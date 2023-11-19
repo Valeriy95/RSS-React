@@ -5,7 +5,9 @@ import { RootState, setInputCurrentValue } from '../slices/appSlice';
 
 function Input() {
   const dispatch = useDispatch();
-  const inputCurrentValue = useSelector((state: RootState) => state.app.inputCurrentValue);
+  const inputCurrentValue = useSelector(
+    (state: RootState) => state.app.inputCurrentValue,
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;

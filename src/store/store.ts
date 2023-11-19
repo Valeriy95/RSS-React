@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import appReducer from '../slices/appSlice';
-import { api } from '../API/getPerson';
+import { api } from '../API/getAllPokemons';
 
 export default configureStore({
   reducer: {

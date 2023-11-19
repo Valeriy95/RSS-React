@@ -1,6 +1,5 @@
-import React from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { useGetPersonQuery } from '../API/getPerson';
+import { useGetAllPokemonsQuery } from '../API/getAllPokemons';
 import { getAllPages } from '../pagination/getAllPages';
 import { ITestData, Pokemon } from '../types/types';
 import { useEffect } from 'react';
@@ -12,6 +11,7 @@ import {
   setArrAllPages,
   setDetailData,
   setIsClosed,
+  setLoading,
   RootState,
 } from '../slices/appSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,18 +29,13 @@ export function ItemComponent() {
   const page = useSelector((state: RootState) => state.app.page);
   const isClosed = useSelector((state: RootState) => state.app.isClosed);
 
-
   const offset = (Number(number) - 1) * (itemAllPages as number);
 
-  const { data: responseData } = useGetPersonQuery({
+  const { data: responseData } = useGetAllPokemonsQuery({
     text: inputValue,
     item: offset,
     lim: itemAllPages,
   });
-
-
-
-  // const { data: pokemonData, error: pokemonError } = useGetPokemonQuery(urlTest as string);
 
   useEffect(() => {
     if (number === undefined) {
@@ -51,6 +46,7 @@ export function ItemComponent() {
     ) {
       navigate('/error');
     } else {
+      dispatch(setLoading(true));
       const pagination = document.querySelector('.pagination') as HTMLElement;
       pagination.classList.remove('hidden');
       dispatch(setPage(Number(number)));
@@ -62,10 +58,9 @@ export function ItemComponent() {
           dispatch(setData(responseData));
         }
       }
+      dispatch(setLoading(false));
     }
-  // }, [responseData, itemAllPages, urlTest, pokemonData, data]);
-}, [data, responseData, page]);
-
+  }, [data, responseData, page]);
 
   function handlePageClickArr(e: ITestData) {
     if (e.url) {
@@ -75,24 +70,23 @@ export function ItemComponent() {
           if (pokemonData) {
             dispatch(setDetailData(pokemonData));
           }
-        }); 
+        });
       } else {
         dispatch(setIsClosed(true));
         dispatch(setDetailData(null));
         navigate(`/${number}`);
       }
+    }
   }
-}
 
-
-    function handlePageClick(dataPokem: Pokemon) {
-        if (isClosed) {
-          dispatch(setDetailData(dataPokem));
-          dispatch(setIsClosed(false));
-        } else {
-          dispatch(setDetailData(null));
-          dispatch(setIsClosed(true));
-        }
+  function handlePageClick(dataPokem: Pokemon) {
+    if (isClosed) {
+      dispatch(setDetailData(dataPokem));
+      dispatch(setIsClosed(false));
+    } else {
+      dispatch(setDetailData(null));
+      dispatch(setIsClosed(true));
+    }
   }
 
   return (

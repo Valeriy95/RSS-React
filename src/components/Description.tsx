@@ -1,16 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  setIsClosed,
-  setDetailData,
-  RootState,
-} from '../slices/appSlice';
+import { setIsClosed, setDetailData, RootState } from '../slices/appSlice';
+import { Pokemon } from '../types/types';
 
 export function Description() {
-  const detailData = useSelector((state: RootState) => state.app.detailData);
+  const detailData = useSelector(
+    (state: RootState) => state.app.detailData as Pokemon,
+  );
   const dispatch = useDispatch();
 
-  
   const navigate = useNavigate();
   const { 1: number } = useParams();
 

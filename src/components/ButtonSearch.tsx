@@ -1,5 +1,5 @@
 import '../style/style.css';
-import { useGetPersonQuery } from '../API/getPerson';
+import { useGetAllPokemonsQuery } from '../API/getAllPokemons';
 import { getAllPages } from '../pagination/getAllPages';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -19,9 +19,11 @@ function ButtonSearch() {
     (state: RootState) => state.app.itemAllPages,
   );
   const inputValue = useSelector((state: RootState) => state.app.inputValue);
-  const inputCurrentValue = useSelector((state: RootState) => state.app.inputCurrentValue);
+  const inputCurrentValue = useSelector(
+    (state: RootState) => state.app.inputCurrentValue,
+  );
 
-  const { data, error } = useGetPersonQuery({
+  const { data, error } = useGetAllPokemonsQuery({
     text: inputValue as string,
     item: 0,
     lim: itemAllPages as number,
