@@ -1,11 +1,11 @@
-import { IPeople, Pokemon } from '../types/types';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { IAllPokemons, Pokemon } from './types/apiTypes';
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
   endpoints: (builder) => ({
     getAllPokemons: builder.query<
-      IPeople,
+    IAllPokemons | Pokemon,
       { text: string; item: number; lim: number }
     >({
       query: ({ text, item, lim }) =>

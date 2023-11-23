@@ -3,13 +3,12 @@ import { useGetAllPokemonsQuery } from './API/getAllPokemons';
 import './App.css';
 import './style/style.css';
 import { getAllPages } from './pagination/getAllPages';
-import InputNew from './components/Input';
+import SearchInput from './components/SearchInput';
 import ButtonSearch from './components/ButtonSearch';
 import ErrorButton from './components/ButtonError';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { ItemComponent } from './components/ItemComponent';
-import { ErrorComponent } from './components/ErrorComponent';
 import Description from './components/Description';
 import ButtonPagination from './components/ButtonPagination';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,9 +16,11 @@ import {
   RootState,
   setArrAllPages,
   setData,
+  setError,
   setInputValue,
   setLoading,
 } from './slices/appSlice';
+import { IAllPokemons, Pokemon } from './API/types/apiTypes';
 
 function App() {
   const dispatch = useDispatch();
@@ -50,10 +51,11 @@ function App() {
 
     if (responseData) {
       if (inputValue === '') {
-        dispatch(setData(responseData.results));
-        dispatch(setArrAllPages(getAllPages(responseData.count)));
+        const dataAllPokemons = responseData as IAllPokemons;
+        dispatch(setData(dataAllPokemons.results));
+        dispatch(setArrAllPages(getAllPages(dataAllPokemons.count)));
       } else {
-        dispatch(setData(responseData));
+        dispatch(setData(responseData as Pokemon));
       }
     }
 
@@ -66,18 +68,30 @@ function App() {
 
   useEffect(() => {
     if (responseError) {
-      navigate('/error');
+      dispatch(setError(true));
     }
   }, [responseError]);
 
+  function updateNavigation (num: number) {
+    navigate(`${num}`)
+  }
+
+  function updateInput (str: string) {
+    dispatch(setInputValue(str));
+  }
+
+  function updateError (str: boolean) {
+    dispatch(setError(str));
+  }
+
   return (
-    <div>
-      <ErrorBoundary error={error}>
-        <div>
-          <InputNew />
+    <>
+      <ErrorBoundary error={error} updateError={updateError} updateInput={updateInput} updateNavigation={updateNavigation}>
+        <>
+          <SearchInput />
           <ButtonSearch />
           <ErrorButton />
-        </div>
+        </>
         <div className="result-container">
           {loading ? (
             <div className="loading"></div>
@@ -97,7 +111,6 @@ function App() {
                       <Route path="details" element={<Description />} />
                     </Route>
                   ))}
-                  <Route path="error" element={<ErrorComponent />} />
                 </Routes>
               </div>
             </div>
@@ -105,7 +118,7 @@ function App() {
           <div>{arrAllPages.length > 1 ? <ButtonPagination /> : null}</div>
         </div>
       </ErrorBoundary>
-    </div>
+    </>
   );
 }
 

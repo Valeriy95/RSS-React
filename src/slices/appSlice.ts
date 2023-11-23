@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IAppState, IPeople, ITestData, Pokemon } from '../types/types';
 import store from '../store/store';
+import { IAppState } from './types/appSliceTypes';
+import { IPokemonsResults, Pokemon } from '../API/types/apiTypes';
 
 const initialState: IAppState = {
   inputValue: localStorage.getItem('inputValue') || '',
@@ -28,7 +29,7 @@ export const appSlice = createSlice({
     },
     setData: (
       state,
-      action: PayloadAction<ITestData[] | IPeople | ITestData>,
+      action: PayloadAction<IPokemonsResults[] | Pokemon>,
     ) => {
       state.data = action.payload;
     },

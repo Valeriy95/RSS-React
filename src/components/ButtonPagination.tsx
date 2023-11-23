@@ -8,6 +8,7 @@ import {
   setLoading,
   RootState,
 } from '../slices/appSlice';
+import { useState } from 'react';
 
 function ButtonPagination() {
   const navigate = useNavigate();
@@ -18,16 +19,25 @@ function ButtonPagination() {
   );
   const lastPage = useSelector((state: RootState) => state.app.lastPage);
 
+  const [isLastPageActive, setLastPageActive] = useState(true);
+  const [isNextPageActive, setNextPageActive] = useState(true);
+  const [isStartPageActive, setStartPageActive] = useState(false);
+  const [isPreviousPageActive, setPreviousPageActive] = useState(false);
+
   const decrementPage = (p: number) => {
     dispatch(setLoading(true));
     if (p - 1 === 1) {
       dispatch(setPage(p - 1));
-      removeStylePagesPrevious();
+      setStartPageActive(false);
+      setNextPageActive(true);
+      setLastPageActive(true);
+      setPreviousPageActive(false);
       navigate(`/${p - 1}`);
     }
     if (p > 1) {
       dispatch(setPage(p - 1));
-      addStylePagesNext();
+      setNextPageActive(true);
+      setLastPageActive(true);
       navigate(`/${p - 1}`);
     }
     dispatch(setLoading(false));
@@ -36,13 +46,15 @@ function ButtonPagination() {
   const incrementPage = (p: number) => {
     dispatch(setLoading(true));
     if (p === (lastPage as number) - 1) {
-      removeStylePagesNext();
+      setLastPageActive(false);
+      setNextPageActive(false);
       navigate(`/${p + 1}`);
     }
     if (p < (lastPage as number)) {
       if (p === 1) {
         dispatch(setPage(p + 1));
-        addStylePagesPrevious();
+        setStartPageActive(true);
+        setPreviousPageActive(true);
         navigate(`/${p + 1}`);
       } else {
         dispatch(setPage(p + 1));
@@ -54,8 +66,10 @@ function ButtonPagination() {
 
   const getLastPage = (itemPages: number) => {
     dispatch(setLoading(true));
-    addStylePagesPrevious();
-    removeStylePagesNext();
+    setStartPageActive(true);
+    setNextPageActive(false);
+    setLastPageActive(false);
+    setPreviousPageActive(true);
     const itemsPages = itemPages;
     const totalCount = 1292;
     const lastPage = Math.ceil(totalCount / itemsPages);
@@ -68,8 +82,10 @@ function ButtonPagination() {
   const getStartPage = (itemPages: number) => {
     dispatch(setLoading(true));
     dispatch(setPage(itemPages));
-    addStylePagesNext();
-    removeStylePagesPrevious();
+    setStartPageActive(false);
+    setNextPageActive(true);
+    setLastPageActive(true);
+    setPreviousPageActive(false);
     dispatch(setLoading(false));
     navigate('/1');
   };
@@ -84,68 +100,33 @@ function ButtonPagination() {
     const totalCount = 1292;
     const updateLastPage = Math.ceil(totalCount / selectedValue);
     dispatch(setLastPage(updateLastPage));
-    removeStylePagesPrevious();
-    addStylePagesNext();
+    setStartPageActive(false);
+    setNextPageActive(true);
+    setLastPageActive(true);
+    setPreviousPageActive(false);
     navigateToStart();
-  }
-
-  const btnLastPage = document.querySelector('.last-page') as HTMLButtonElement;
-  const btnNextPage = document.querySelector('.next-page') as HTMLButtonElement;
-  const btnStartPage = document.querySelector(
-    '.btn-start',
-  ) as HTMLButtonElement;
-  const btnPrevious = document.querySelector(
-    '.btn-previous',
-  ) as HTMLButtonElement;
-
-  function removeStylePagesNext() {
-    btnLastPage.disabled = true;
-    btnLastPage.classList.remove('active-pagination');
-    btnNextPage.disabled = true;
-    btnNextPage.classList.remove('active-pagination');
-  }
-
-  function addStylePagesNext() {
-    btnLastPage.disabled = false;
-    btnLastPage.classList.add('active-pagination');
-    btnNextPage.disabled = false;
-    btnNextPage.classList.add('active-pagination');
-  }
-
-  function removeStylePagesPrevious() {
-    btnStartPage.disabled = true;
-    btnStartPage.classList.remove('active-pagination');
-    btnPrevious.disabled = true;
-    btnPrevious.classList.remove('active-pagination');
-  }
-
-  function addStylePagesPrevious() {
-    btnStartPage.disabled = false;
-    btnStartPage.classList.add('active-pagination');
-    btnPrevious.disabled = false;
-    btnPrevious.classList.add('active-pagination');
   }
 
   return (
     <div className="pagination">
-      <div className="page btn-start" onClick={() => getStartPage(1)}>
+      <div className={`page btn-start ${isStartPageActive ? 'active-pagination' : ''}`} onClick={() => getStartPage(1)}>
         {'<<'}
       </div>
       <div
-        className="page btn-previous"
+        className={`page btn-previous ${isPreviousPageActive ? 'active-pagination' : ''}`}
         onClick={() => decrementPage(page as number)}
       >
         {'<'}
       </div>
       <div className="page">{`${page}`}</div>
       <button
-        className="page active-pagination next-page"
+        className={`page next-page ${isNextPageActive ? 'active-pagination' : ''}`}
         onClick={() => incrementPage(page as number)}
       >
         {'>'}
       </button>
       <button
-        className="page active-pagination last-page"
+        className={`page last-page ${isLastPageActive ? 'active-pagination' : ''}`}
         onClick={() => getLastPage(itemAllPages as number)}
       >
         {'>>'}

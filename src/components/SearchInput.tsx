@@ -3,7 +3,7 @@ import '../style/style.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, setInputCurrentValue } from '../slices/appSlice';
 
-function Input() {
+function SearchInput() {
   const dispatch = useDispatch();
   const inputCurrentValue = useSelector(
     (state: RootState) => state.app.inputCurrentValue,
@@ -15,15 +15,13 @@ function Input() {
   };
 
   return (
-    <>
       <input
         type="text"
         onChange={handleInputChange}
         value={inputCurrentValue}
         className="input"
       />
-    </>
   );
 }
 
-export default Input;
+export default SearchInput;

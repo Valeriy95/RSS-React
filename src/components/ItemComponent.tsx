@@ -1,10 +1,8 @@
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { useGetAllPokemonsQuery } from '../API/getAllPokemons';
+import { api, useGetAllPokemonsQuery } from '../API/getAllPokemons';
 import { getAllPages } from '../pagination/getAllPages';
-import { ITestData, Pokemon } from '../types/types';
 import { useEffect } from 'react';
 import '../style/style.css';
-import { getPokemon } from '../API/getPokemon';
 import {
   setPage,
   setData,
@@ -15,6 +13,7 @@ import {
   RootState,
 } from '../slices/appSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { IAllPokemons, IPokemonsResults, Pokemon } from '../API/types/apiTypes';
 
 export function ItemComponent() {
   const { 1: number } = useParams();
@@ -29,13 +28,15 @@ export function ItemComponent() {
   const page = useSelector((state: RootState) => state.app.page);
   const isClosed = useSelector((state: RootState) => state.app.isClosed);
 
-  const offset = (Number(number) - 1) * (itemAllPages as number);
+  const offset = (Number(number) - 1) * itemAllPages;
 
   const { data: responseData } = useGetAllPokemonsQuery({
     text: inputValue,
     item: offset,
     lim: itemAllPages,
   });
+
+  const [trigger] = api.endpoints.getPokemon.useLazyQuery();
 
   useEffect(() => {
     if (number === undefined) {
@@ -52,25 +53,28 @@ export function ItemComponent() {
       dispatch(setPage(Number(number)));
       if (responseData) {
         if (inputValue === '') {
-          dispatch(setData(responseData.results));
-          dispatch(setArrAllPages(getAllPages(responseData.count)));
+          const dataAllPokemons = responseData as IAllPokemons;
+          dispatch(setData(dataAllPokemons.results));
+          dispatch(setArrAllPages(getAllPages(dataAllPokemons.count)));
         } else {
-          dispatch(setData(responseData));
+          dispatch(setData(responseData as Pokemon));
         }
       }
       dispatch(setLoading(false));
     }
   }, [data, responseData, page]);
 
-  function handlePageClickArr(e: ITestData) {
+    function handlePageClickArr(e: IPokemonsResults) {
     if (e.url) {
+      const match = e.url.match(/\/(\d+\/)$/) as RegExpMatchArray;
+      const idPokemon = match[1];
       if (isClosed) {
         dispatch(setIsClosed(false));
-        getPokemon(e.url).then((pokemonData) => {
-          if (pokemonData) {
-            dispatch(setDetailData(pokemonData));
-          }
-        });
+        trigger(idPokemon)
+        .unwrap()
+        .then((pokemonData) => {
+          dispatch(setDetailData(pokemonData));
+        })
       } else {
         dispatch(setIsClosed(true));
         dispatch(setDetailData(null));

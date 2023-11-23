@@ -1,7 +1,6 @@
 import '../style/style.css';
 import { useGetAllPokemonsQuery } from '../API/getAllPokemons';
 import { getAllPages } from '../pagination/getAllPages';
-import { useNavigate } from 'react-router-dom';
 import {
   setPage,
   setLoading,
@@ -9,11 +8,12 @@ import {
   setArrAllPages,
   setInputValue,
   RootState,
+  setError,
 } from '../slices/appSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { IAllPokemons, Pokemon } from '../API/types/apiTypes';
 
 function ButtonSearch() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const itemAllPages = useSelector(
     (state: RootState) => state.app.itemAllPages,
@@ -24,26 +24,26 @@ function ButtonSearch() {
   );
 
   const { data, error } = useGetAllPokemonsQuery({
-    text: inputValue as string,
+    text: inputValue,
     item: 0,
-    lim: itemAllPages as number,
+    lim: itemAllPages,
   });
 
   const handleButtonClick = () => {
     dispatch(setLoading(true));
-    localStorage.setItem('inputValue', inputCurrentValue as string);
+    localStorage.setItem('inputValue', inputCurrentValue);
     dispatch(setInputValue(inputCurrentValue));
-
     if (data) {
+      const dataAllPokemons = data as IAllPokemons;
       if (inputValue === '') {
-        dispatch(setData(data.results));
-        dispatch(setArrAllPages(getAllPages(data.count)));
+          dispatch(setData(dataAllPokemons.results));
+          dispatch(setArrAllPages(getAllPages(dataAllPokemons.count)));
       } else {
-        dispatch(setData(data));
+        dispatch(setData(data as Pokemon));
       }
       dispatch(setPage(1));
     } else if (error) {
-      navigate('/error');
+      dispatch(setError(true));
     }
 
     dispatch(setLoading(false));

@@ -6,6 +6,14 @@
     margin-bottom: 4px;
 }
 
+.description-person:hover,
+.button-search:hover,
+.button-error:hover {
+    background-color: #01aec5;
+    color: #fff;
+    cursor: pointer;
+}
+
 .loading {
     width: 100px;
     height: 100px;
