@@ -1,0 +1,175 @@
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+} */
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.link {
+  color: #f69d11;;
+  text-decoration: inherit;
+  font-size: 20px;
+  font-weight: 600;
+  transition: 0.5s;
+}
+
+.link:hover {
+  color: #c47500;
+  font-weight: 800;
+  transition: 0.5s;
+}
+
+.list-container {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.item-container {
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.item-country {
+  display: block;
+  width: 200px;
+  height: 200px;
+  overflow: auto;
+  list-style: none;
+  border: 1px solid;
+  padding-left: 0px;
+  font-size: 19px;
+}
+
+.item-country::-webkit-scrollbar {
+  width: 10px; /* Ширина скроллбара */
+}
+
+/* Стили для бегунка (thumb) скроллбара */
+.item-country::-webkit-scrollbar-thumb {
+  background-color: #f69d11; /* Цвет бегунка */
+  border-radius: 3px; /* Закругление углов бегунка */
+}
+
+/* Стили для трека (track) скроллбара */
+.item-country::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Цвет трека */
+}
+
+.list-countries {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-wrapper {
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-container {
+  width: 300px;
+  height: 300px;
+}
+
+.country {
+  padding-left: 15px;
+  padding-bottom: 5px;
+}
+
+.country:hover {
+  cursor: pointer;
+  background-color: #f69d11;;
+  color: #ffffff;
+}
+
+.title {
+  font-size: 20px;
+  color: #f69d11;;
+}
+
+.input-image:hover,
+.termsAccepted:hover,
+.gender:hover {
+  cursor: pointer;
+}
+/* .input {
+  border: 2px solid #3ac0f9;
+    border-radius: 5px;
+} */
+
+.btn-submit {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background: #f69d11;
+  border: 1px solid #f69d11;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 10px 25px;
+}
+
+.btn-submit:hover {
+  cursor: pointer;
+  background-color: #c47500;;
+}
+
+.text-error {
+  color: red;
+}
+
+.hidden {
+  display: none;
+}
