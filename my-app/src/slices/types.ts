@@ -1,6 +1,6 @@
 export interface IAppState {
   countries: string[]
-  countriesTest: string[]
+  countriesList: string[]
   name: string
   age: number
   email: string

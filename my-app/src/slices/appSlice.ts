@@ -121,7 +121,7 @@ const initialState: IAppState = {
     'Zambia',
     'Zimbabwe',
   ],
-  countriesTest: [
+  countriesList: [
     'Afghanistan',
     'Albania',
     'Algeria',
@@ -251,7 +251,6 @@ const initialState: IAppState = {
   isRegistrate: false,
 }
 
-
 export const appSlice = createSlice({
   name: 'app',
   initialState,
@@ -295,6 +294,18 @@ export const appSlice = createSlice({
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
-export const { updateName, updateAge, updateEmail, updatePassword, updatePasswordDub, updateGender, updateTermsAccepted, updateImage, updateCountry, updateCountries, updateIsRegistrate } = appSlice.actions
+export const {
+  updateName,
+  updateAge,
+  updateEmail,
+  updatePassword,
+  updatePasswordDub,
+  updateGender,
+  updateTermsAccepted,
+  updateImage,
+  updateCountry,
+  updateCountries,
+  updateIsRegistrate,
+} = appSlice.actions
 
 export default appSlice.reducer

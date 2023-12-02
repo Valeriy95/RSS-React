@@ -1,10 +1,22 @@
-import { useState } from 'react'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useRef, useState } from 'react'
 import * as yup from 'yup'
-import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState, updateAge, updateCountries, updateCountry, updateEmail, updateGender, updateImage, updateIsRegistrate, updateName, updatePassword, updatePasswordDub, updateTermsAccepted } from '../slices/appSlice'
+import {
+  RootState,
+  updateAge,
+  updateCountries,
+  updateCountry,
+  updateEmail,
+  updateGender,
+  updateImage,
+  updateIsRegistrate,
+  updateName,
+  updatePassword,
+  updatePasswordDub,
+  updateTermsAccepted,
+} from '../slices/appSlice'
 import { useNavigate } from 'react-router-dom'
+import { ValidationErrors } from './types'
 
 const schema = yup.object().shape({
   yourName: yup
@@ -40,287 +52,294 @@ const schema = yup.object().shape({
     .oneOf([true], 'Accept the terms and conditions')
     .required('Accept the terms and conditions'),
   image: yup
-  .mixed()
-  .required('Upload an image')
-  .test('fileSize', 'File size is too large', (value) => {
-    if (value && value.length > 0 && value[0].size) {
-      return value[0].size <= 1024 * 1024; // 1 MB
-    }
-    return true; // allow empty file (no file selected)
-  })
-  .test('fileFormat', 'Invalid file format', (value) => {
-    if (value && value.length > 0 && value[0].type) {
-      return ['image/png', 'image/jpeg'].includes(value[0].type);
-    }
-    return true; // allow empty file (no file selected)
-  }),
-    // .mixed()
-    // .required('Upload an image')
-    // .test('fileSize', 'File size is too large', (value) => {
-    //   if (!value) return true // allow empty file (no file selected)
-    //   return value[0].size <= 1024 * 1024 // 1 MB
-    // })
-    // .test('fileFormat', 'Invalid file format', (value) => {
-    //   if (!value) return true // allow empty file (no file selected)
-    //   return ['image/png', 'image/jpeg'].includes(value[0].type)
-    // }),
+    .mixed<FileList>()
+    .required('Upload an image')
+    .test('fileSize', 'File size is too large', (value) => {
+      if (value && value.length > 0 && value[0].size) {
+        return value[0].size <= 1024 * 1024
+      }
+      return true
+    })
+    .test('fileFormat', 'Invalid file format', (value) => {
+      if (value && value.length > 0 && value[0].type) {
+        return ['image/png', 'image/jpeg'].includes(value[0].type)
+      }
+      return true
+    }),
   country: yup.string().required('Choose the country'),
 })
 
-function Form1() {
+function Form2() {
   const dispatch = useDispatch()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [isHiddenListCountries, setIsHiddenListCountries] = useState(true)
   let countries = useSelector((state: RootState) => state.app.countries)
-  const countriesTest = useSelector(
-    (state: RootState) => state.app.countriesTest,
+  const countriesList = useSelector(
+    (state: RootState) => state.app.countriesList,
   )
-  const country = useSelector(
-    (state: RootState) => state.app.country,
-  )
+  const country = useSelector((state: RootState) => state.app.country)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  })
+  const [selectedGender, setSelectedGender] = useState('')
+
+  const nameRef = useRef<HTMLInputElement | null>(null)
+  const ageRef = useRef<HTMLInputElement | null>(null)
+  const emailRef = useRef<HTMLInputElement | null>(null)
+  const passwordRef = useRef<HTMLInputElement | null>(null)
+  const passwordDubRef = useRef<HTMLInputElement | null>(null)
+  const genderRef = useRef<HTMLInputElement | null>(null)
+  const termsAcceptedRef = useRef<HTMLInputElement | null>(null)
+  const imageRef = useRef<HTMLInputElement | null>(null)
+  const countryRef = useRef<HTMLInputElement | null>(null)
+
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
 
   const onSelectCountry = (selectedCountry: string) => {
     dispatch(updateCountry(selectedCountry))
   }
 
   const onClickCountry = () => {
-    setIsHiddenListCountries(false);
+    setIsHiddenListCountries(false)
   }
 
   const onChangeCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    dispatch(updateCountry(value)) 
-    countries = countriesTest
-
+    dispatch(updateCountry(value))
+    countries = countriesList
     const filteredCountries = countries.filter((country) =>
       country.toLowerCase().startsWith(value.toLowerCase()),
     )
     dispatch(updateCountries(filteredCountries))
   }
 
-  function onSubmitHandler(data) {
-    // console.log(data)
-    // console.log('dasda')
-
-    // console.log(data.image)
-    // console.log(data.image[0])
-    const readerFile = new FileReader();
-    readerFile.readAsDataURL(data.image[0]);
-    readerFile.onloadend = () => {
-      const base64 = readerFile.result as string;
-      dispatch(updateImage(base64))
-    };
-
-
-    dispatch(updateName(data.yourName))
-    dispatch(updateAge(data.yourAge))
-    dispatch(updateEmail(data.yourEmail))
-    dispatch(updatePassword(data.yourPassword))
-    dispatch(updatePasswordDub(data.yourPasswordDub))
-    dispatch(updateGender(data.gender))
-    dispatch(updateTermsAccepted(data.termsAccepted))
-    dispatch(updateCountry(data.country))
-    dispatch(updateIsRegistrate(true));
-    navigate('/')
+  function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const data = {
+      yourName: nameRef.current?.value,
+      yourAge: ageRef.current?.value,
+      yourEmail: emailRef.current?.value,
+      yourPassword: passwordRef.current?.value,
+      yourPasswordDub: passwordDubRef.current?.value,
+      gender: selectedGender,
+      termsAccepted: termsAcceptedRef.current?.checked,
+      image: imageRef.current?.files,
+      country: countryRef.current?.value,
+    }
+    schema
+      .validate(data, { abortEarly: false })
+      .then((validData) => {
+        const readerFile = new FileReader()
+        readerFile.readAsDataURL(validData.image[0])
+        readerFile.onloadend = () => {
+          const base64 = readerFile.result as string
+          setValidationErrors({})
+          dispatch(updateName(validData.yourName))
+          dispatch(updateAge(validData.yourAge))
+          dispatch(updateEmail(validData.yourEmail))
+          dispatch(updatePassword(validData.yourPassword))
+          dispatch(updatePasswordDub(validData.yourPasswordDub))
+          dispatch(updateGender(validData.gender))
+          dispatch(updateTermsAccepted(validData.termsAccepted))
+          dispatch(updateImage(base64))
+          dispatch(updateCountry(validData.country))
+          dispatch(updateIsRegistrate(true))
+          navigate('/')
+        }
+      })
+      .catch((errors) => {
+        console.error('Errors:', errors)
+        const newValidationErrors: { [key: string]: yup.ValidationError } = {}
+        errors.inner.forEach((error: yup.ValidationError) => {
+          if (error.path) {
+            newValidationErrors[error.path] = error
+          }
+        })
+        setValidationErrors(newValidationErrors)
+      })
   }
 
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   console.log(file)
-  //   console.log(e.target)
-  //   console.log(e.target.files)
-  //   console.log(e.target.files[0].size)
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-  //   reader.onloadend = () => {
-  //     // reader.result содержит Data URL (base64)
-  //     const base64Data = reader.result;
-
-  //     // Отправляем base64Data в Redux store с использованием экшена updateImage
-  //     console.log(typeof base64Data)
-  //   };
-
-  //   // Выполните здесь необходимую валидацию (размер, формат и т.д.)
-  //   // Если файл проходит валидацию, переходите к следующему шагу.
-  // };
+  function handleGenderChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSelectedGender(e.target.value)
+  }
 
   return (
-    <div className='list-container'>
-      <form onSubmit={handleSubmit(onSubmitHandler)}>
+    <div className="list-container">
+      <form onSubmit={onSubmitHandler}>
         <div className="item-container">
-          <div className='item-wrapper'>
-          <label htmlFor="yourName" className='title'>Name:</label>
-          <input
-            {...register('yourName')}
-            type="text"
-            id="yourName"
-            name="yourName"
-            className='input'
-          /> 
+          <div className="item-wrapper">
+            <label htmlFor="yourName" className="title">
+              Name:
+            </label>
+            <input
+              ref={nameRef}
+              type="text"
+              id="yourName"
+              name="yourName"
+              className="input"
+            />
           </div>
-          <p className='text-error'>{errors.yourName?.message}</p>
+          <p className="text-error">{validationErrors.yourName?.message}</p>
         </div>
 
         <div className="item-container">
-        <div className='item-wrapper'>
-        <label htmlFor="yourAge" className='title'>Age:</label>
-          <input
-            {...register('yourAge')}
-            type="number"
-            id="yourAge"
-            name="yourAge"
-            className='input'
-          />
-        </div>
-          <p className='text-error'>{errors.yourAge?.message}</p>
+          <div className="item-wrapper">
+            <label htmlFor="yourAge" className="title">
+              Age:
+            </label>
+            <input
+              ref={ageRef}
+              type="number"
+              id="yourAge"
+              name="yourAge"
+              className="input"
+            />
+          </div>
+          <p className="text-error">{validationErrors.yourAge?.message}</p>
         </div>
 
         <div className="item-container">
-          <div className='item-wrapper'>
-          <label htmlFor="yourEmail" className='title'>Email:</label>
-          <input
-            {...register('yourEmail')}
-            type="email"
-            id="yourEmail"
-            name="yourEmail"
-            className='input'
-          />
+          <div className="item-wrapper">
+            <label htmlFor="yourEmail" className="title">
+              Email:
+            </label>
+            <input
+              ref={emailRef}
+              type="email"
+              id="yourEmail"
+              name="yourEmail"
+              className="input"
+            />
           </div>
-          <p className='text-error'>{errors.yourEmail?.message}</p>
+          <p className="text-error">{validationErrors.yourEmail?.message}</p>
         </div>
 
         <div className="item-container">
-          <div className='item-wrapper'>
-          <label htmlFor="yourPassword" className='title'>Password:</label>
-          <input
-            {...register('yourPassword')}
-            type="password"
-            id="yourPassword"
-            name="yourPassword"
-            className='input'
-          />
+          <div className="item-wrapper">
+            <label htmlFor="yourPassword" className="title">
+              Password:
+            </label>
+            <input
+              ref={passwordRef}
+              type="password"
+              id="yourPassword"
+              name="yourPassword"
+              className="input"
+            />
           </div>
-          <p className='text-error'>{errors.yourPassword?.message}</p>
+          <p className="text-error">{validationErrors.yourPassword?.message}</p>
         </div>
 
         <div className="item-container">
-          <div className='item-wrapper'>
-          <label htmlFor="yourPasswordDub" className='title'>Repeat password:</label>
-          <input
-            {...register('yourPasswordDub')}
-            type="password"
-            id="yourPasswordDub"
-            name="yourPasswordDub"
-            className='input'
-          />
+          <div className="item-wrapper">
+            <label htmlFor="yourPasswordDub" className="title">
+              Repeat password:
+            </label>
+            <input
+              ref={passwordDubRef}
+              type="password"
+              id="yourPasswordDub"
+              name="yourPasswordDub"
+              className="input"
+            />
           </div>
-          <p className='text-error'>{errors.yourPasswordDub?.message}</p>
+          <p className="text-error">
+            {validationErrors.yourPasswordDub?.message}
+          </p>
         </div>
 
         <div className="item-container">
           <div>
-          <label className='title gender'>
-          Select gender:
-            <input
-              {...register('gender')}
-              type="radio"
-              name="gender"
-              value="male"
-              //   checked={selectedGender === 'male'}
-              //   onChange={handleGenderChange}
-            />
-            Male
-          </label>
-          <label className='title gender'>
-            <input
-              {...register('gender')}
-              type="radio"
-              name="gender"
-              value="female"
-              //   checked={selectedGender === 'female'}
-              //   onChange={handleGenderChange}
-            />
-            Female
-          </label>
+            <label className="title gender">
+              Select gender:
+              <input
+                ref={genderRef}
+                type="radio"
+                name="gender"
+                value="male"
+                checked={selectedGender === 'male'}
+                onChange={handleGenderChange}
+              />
+              Male
+            </label>
+            <label className="title gender">
+              <input
+                ref={genderRef}
+                type="radio"
+                name="gender"
+                value="female"
+                checked={selectedGender === 'female'}
+                onChange={handleGenderChange}
+              />
+              Female
+            </label>
           </div>
-          <p className='text-error'>{errors.gender?.message}</p>
+          <p className="text-error">{validationErrors.gender?.message}</p>
         </div>
 
         <div className="item-container">
           <div>
-          <label className='title termsAccepted'>
-            <input
-              {...register('termsAccepted')}
-              type="checkbox"
-              //   checked={isTermsAccepted}
-              //   onChange={handleTermsChange}
-            />
-            Accept terms and conditions
-          </label>
+            <label className="title termsAccepted">
+              <input ref={termsAcceptedRef} type="checkbox" />
+              Accept terms and conditions
+            </label>
           </div>
-          <p className='text-error'>{errors.termsAccepted?.message}</p>
+          <p className="text-error">
+            {validationErrors.termsAccepted?.message}
+          </p>
         </div>
 
         <div className="item-container">
-          <div className='item-wrapper'>
-          <label className='title'>
-          Upload an image
-          </label>
+          <div className="item-wrapper">
+            <p className="title">Image</p>
+            <label htmlFor="image" className="label-image">
+              Upload an image
+            </label>
             <input
-              {...register('image')}
-              //  ref={(e) => {
-              //   register('image');
-              //   imageInput.current = e;
-              // }}
+              ref={imageRef}
               type="file"
-              accept=".png, .jpg"
-              className='input-image'
-              // onChange={() => {
-              //   trigger('image');
-              // }}
+              id="image"
+              className="input-image"
             />
           </div>
-          <p className='text-error'>{errors.image?.message}</p>
+          <p className="text-error">{validationErrors.image?.message}</p>
         </div>
 
         <div className="item-container list-countries">
-          <div className='item-wrapper'>
-          <label htmlFor="country" className='title'>Choose the country:</label>
-          <input
-            {...register('country')}
-            type="text"
-            id="country"
-            value={country}
-            onInput={onChangeCountry}
-            onClick={onClickCountry}
-            className='input'
-
-            // value={inputValue}
-            // onChange={handleInputChange}
-          />
+          <div className="item-wrapper">
+            <label htmlFor="country" className="title">
+              Choose the country:
+            </label>
+            <input
+              ref={countryRef}
+              type="text"
+              id="country"
+              value={country}
+              onInput={onChangeCountry}
+              onClick={onClickCountry}
+              className="input"
+            />
           </div>
-          <ul className={`item-country ${isHiddenListCountries ? 'hidden' : ''}`}>
+          <ul
+            className={`item-country ${isHiddenListCountries ? 'hidden' : ''}`}
+          >
             {countries.map((country) => (
-              <li className='country' key={country} onClick={() => onSelectCountry(country)}>
+              <li
+                className="country"
+                key={country}
+                onClick={() => onSelectCountry(country)}
+              >
                 {country}
               </li>
             ))}
           </ul>
-          <p className='text-error'>{errors.country?.message}</p>
+          <p className="text-error">{validationErrors.country?.message}</p>
         </div>
 
-        <button className='btn-submit' type="submit">Submit</button>
+        <button className="btn-submit" type="submit">
+          Submit
+        </button>
       </form>
     </div>
   )
 }
 
-export default Form1
+export default Form2
