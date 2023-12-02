@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { RootState } from '../slices/appSlice'
 
-function FinishForm() {
+function CompletedForm() {
   const name = useSelector((state: RootState) => state.app.name)
   const age = useSelector((state: RootState) => state.app.age)
   const email = useSelector((state: RootState) => state.app.email)
@@ -123,4 +123,4 @@ function FinishForm() {
   )
 }
 
-export default FinishForm
+export default CompletedForm

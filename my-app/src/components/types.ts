@@ -10,18 +10,6 @@ export interface IObjectData {
   country: string
 }
 
-// export interface IObjectDataForm {
-//   yourName: string
-//   yourAge: number
-//   yourEmail: string
-//   yourPassword: string
-//   yourPasswordDub: string
-//   gender: string
-//   termsAccepted: boolean
-//   image: string
-//   country: string
-// }
-
 export interface ValidationErrors {
   yourName?: ErrorData
   yourAge?: ErrorData
