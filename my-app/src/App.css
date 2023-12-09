@@ -1,0 +1,163 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.link {
+  color: #f69d11;;
+  text-decoration: inherit;
+  font-size: 22px;
+  font-weight: 600;
+  transition: 0.5s;
+}
+
+.link:hover {
+  color: #c47500;
+  font-weight: 800;
+  transition: 0.5s;
+}
+
+.list-container {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 50px 0px;
+}
+
+.item-container {
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.item-country {
+  display: block;
+  width: 200px;
+  height: 200px;
+  overflow: auto;
+  list-style: none;
+  border: 1px solid;
+  padding-left: 0px;
+  font-size: 19px;
+}
+
+.item-country::-webkit-scrollbar {
+  width: 10px;
+}
+
+.item-country::-webkit-scrollbar-thumb {
+  background-color: #f69d11;
+  border-radius: 3px;
+}
+
+.item-country::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.list-countries {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-wrapper {
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-container {
+  width: 300px;
+  height: 300px;
+}
+
+.country {
+  padding-left: 15px;
+  padding-bottom: 5px;
+}
+
+.country:hover {
+  cursor: pointer;
+  background-color: #f69d11;;
+  color: #ffffff;
+}
+
+.title {
+  font-size: 20px;
+  color: #f69d11;;
+}
+
+.input-image::file-selector-button {
+  display: none !important;
+}
+
+.input-image::after {
+  content: 'Choose file' !important;
+  display: inline-block ! important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+}
+
+.input-image:hover,
+.termsAccepted:hover,
+.gender:hover {
+  cursor: pointer;
+}
+
+.btn-submit {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background: #f69d11;
+  border: 1px solid #f69d11;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 10px 25px;
+}
+
+.btn-submit:hover,
+.label-image:hover {
+  cursor: pointer;
+  background-color: #c47500;;
+}
+
+.text-error {
+  color: red;
+}
+
+
+.label-image {
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  background: #f69d11;
+  border: 1px solid #f69d11;
+  color: #000000;
+  cursor: pointer;
+}
+
+.input-image {
+  display: none;
+}
+
+
+.hidden {
+  display: none;
+}
