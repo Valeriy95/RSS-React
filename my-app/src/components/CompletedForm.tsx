@@ -1,125 +1,36 @@
 import { useSelector } from 'react-redux'
+import ViewForm from './ViewForm'
 import { RootState } from '../slices/appSlice'
 
 function CompletedForm() {
-  const name = useSelector((state: RootState) => state.app.name)
-  const age = useSelector((state: RootState) => state.app.age)
-  const email = useSelector((state: RootState) => state.app.email)
-  const password = useSelector((state: RootState) => state.app.password)
-  const passwordDub = useSelector((state: RootState) => state.app.passwordDub)
-  const gender = useSelector((state: RootState) => state.app.gender)
-  const termsAccepted = useSelector(
-    (state: RootState) => state.app.termsAccepted,
+  const name = useSelector((state: RootState) => state.app.userData.name)
+  const age = useSelector((state: RootState) => state.app.userData.age)
+  const email = useSelector((state: RootState) => state.app.userData.email)
+  const password = useSelector(
+    (state: RootState) => state.app.userData.password,
   )
-  const country = useSelector((state: RootState) => state.app.country)
-  const image = useSelector((state: RootState) => state.app.image)
+  const passwordDub = useSelector(
+    (state: RootState) => state.app.userData.passwordDub,
+  )
+  const gender = useSelector((state: RootState) => state.app.userData.gender)
+  const termsAccepted = useSelector(
+    (state: RootState) => state.app.userData.termsAccepted,
+  )
+  const country = useSelector((state: RootState) => state.app.userData.country)
+  const image = useSelector((state: RootState) => state.app.userData.image)
 
   return (
-    <div className="list-container">
-      <form>
-        <div className="item-container">
-          <div className="item-wrapper">
-            <label htmlFor="yourName" className="title">
-              Name:
-            </label>
-            <input
-              disabled
-              value={name}
-              type="text"
-              id="yourName"
-              name="yourName"
-            />
-          </div>
-        </div>
-
-        <div className="item-container">
-          <div className="item-wrapper">
-            <label htmlFor="yourAge" className="title">
-              Age:
-            </label>
-            <input
-              disabled
-              value={age}
-              type="number"
-              id="yourAge"
-              name="yourAge"
-            />
-          </div>
-        </div>
-
-        <div className="item-container">
-          <div className="item-wrapper">
-            <label htmlFor="yourEmail" className="title">
-              Email:
-            </label>
-            <input
-              disabled
-              value={email}
-              type="email"
-              id="yourEmail"
-              name="yourEmail"
-            />
-          </div>
-        </div>
-
-        <div className="item-container">
-          <div className="item-wrapper">
-            <label htmlFor="yourPassword" className="title">
-              Password:
-            </label>
-            <input
-              disabled
-              value={password}
-              type="password"
-              id="yourPassword"
-              name="yourPassword"
-            />
-          </div>
-        </div>
-
-        <div className="item-container">
-          <div className="item-wrapper">
-            <label htmlFor="yourPasswordDub" className="title">
-              Repeat password:
-            </label>
-            <input
-              disabled
-              value={passwordDub}
-              type="password"
-              id="yourPasswordDub"
-              name="yourPasswordDub"
-            />
-          </div>
-        </div>
-
-        <div className="item-container">
-          <div className="item-wrapper">
-            <label className="title">Gender:</label>
-            <input disabled value={gender} type="text" name="gender" />
-          </div>
-        </div>
-
-        <div className="item-container">
-          <div>
-            <input disabled type="checkbox" checked={termsAccepted} />
-            <label className="title">Accept terms and conditions</label>
-          </div>
-        </div>
-
-        <div className="item-container">
-          <img className="image-container" src={image} alt="image" />
-        </div>
-
-        <div className="item-container list-countries">
-          <div className="item-wrapper">
-            <label htmlFor="country" className="title">
-              Country:
-            </label>
-            <input disabled type="text" id="country" value={country} />
-          </div>
-        </div>
-      </form>
-    </div>
+    <ViewForm
+      name={name}
+      age={age}
+      email={email}
+      password={password}
+      passwordDub={passwordDub}
+      gender={gender}
+      termsAccepted={termsAccepted}
+      country={country}
+      image={image}
+    />
   )
 }
 

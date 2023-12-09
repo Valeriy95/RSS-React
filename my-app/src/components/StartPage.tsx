@@ -4,16 +4,18 @@ import { RootState } from '../slices/appSlice'
 import CompletedForm from './CompletedForm'
 
 function StartPage() {
-  const isRegistrate = useSelector((state: RootState) => state.app.isRegistrate)
+  const isRegistrate = useSelector(
+    (state: RootState) => state.app.userData.isRegistrate,
+  )
 
   return (
     <>
       <div className="container">
         <Link to="/page_1" className="link">
-          Form 1
+          Controlled Form
         </Link>
         <Link to="/page_2" className="link">
-          Form 2
+          Uncontrolled Form
         </Link>
       </div>
       <div>{isRegistrate === true ? <CompletedForm /> : null}</div>
